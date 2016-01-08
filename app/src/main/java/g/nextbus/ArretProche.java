@@ -1,5 +1,6 @@
 package g.nextbus;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -11,7 +12,11 @@ public class ArretProche {
 
         String test = "{\"Latitude\":\"4.3434\"}";
 
-        JSONObject myJson = new JSONObject();
+        try {
+            JSONObject myJson = new JSONObject(test);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         return "";
     }

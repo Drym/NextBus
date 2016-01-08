@@ -1,12 +1,10 @@
 package g.nextbus;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -55,7 +53,9 @@ public class MainActivity extends Activity implements LocationListener {
         marker = gMap.addMarker(new MarkerOptions().title("Vous êtes ici").position(new LatLng(0, 0)));
         markerArret = gMap.addMarker(new MarkerOptions().title("Arret le plus proche").position(new LatLng(43.6, 7.07)));
 
-       // conec = new Connection(listArret);
+        //conec = new Connection(listArret);
+        //Thread t=new Thread(conec);
+        //t.start();
 
         latitude = (TextView)findViewById(R.id.latitude);
         longitude = (TextView)findViewById(R.id.longitude);
