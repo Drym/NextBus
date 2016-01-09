@@ -23,12 +23,17 @@ public class TCPClient {
     BufferedReader in;
     Socket socket;
 
-
+    /*
+    Envoyer un message
+     */
     public void sendMessage(String message){
         out.println(message);
         out.flush();
     }
 
+    /*
+    Récupérer la réponse
+     */
     public String Reponse()  {
 
         try {
@@ -40,6 +45,9 @@ public class TCPClient {
 
     }
 
+    /*
+    Se déconnecter
+     */
     public void stopClient() {
 
         try {
@@ -50,19 +58,22 @@ public class TCPClient {
         catch (Exception e) {}
     }
 
+    /*
+    Se connecter
+     */
     public void run() {
 
 
         try {
-            //here you must put your computer's IP address.
+            //Adresse IP
             InetAddress serverAddr = InetAddress.getByName(SERVERIP);
 
-            //create a socket to make the connection with the server
+            //Création de la socket
             socket = new Socket(serverAddr, SERVERPORT);
 
-            //send the message to the server
+            //Création de outPutStream
             out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
-            //receive the message which the server sends back
+            //Création de inPutStream
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
         }

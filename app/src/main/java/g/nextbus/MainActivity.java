@@ -38,17 +38,12 @@ public class MainActivity extends Activity implements LocationListener {
     private ArretProche arretProche;
     private Connection conec;
 
-    /*******************************************************/
-    /** METHODES / FONCTIONS.
-     /*******************************************************/
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Création de la carte et des marker sur la carte
         gMap = ((MapFragment)getFragmentManager().findFragmentById(R.id.map)).getMap();
         marker = gMap.addMarker(new MarkerOptions().title("Vous êtes ici").position(new LatLng(0, 0)));
         markerArret = gMap.addMarker(new MarkerOptions().title("Arret le plus proche").position(new LatLng(43.6, 7.07)));
@@ -57,6 +52,7 @@ public class MainActivity extends Activity implements LocationListener {
         //Thread t=new Thread(conec);
         //t.start();
 
+        //Création des textes de latitude et longitude
         latitude = (TextView)findViewById(R.id.latitude);
         longitude = (TextView)findViewById(R.id.longitude);
 
@@ -71,9 +67,7 @@ public class MainActivity extends Activity implements LocationListener {
 
     }
 
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
     public void onResume() {
         super.onResume();
@@ -87,9 +81,7 @@ public class MainActivity extends Activity implements LocationListener {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
     public void onPause() {
         super.onPause();
@@ -114,9 +106,7 @@ public class MainActivity extends Activity implements LocationListener {
         locationManager.removeUpdates(this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
     public void onLocationChanged(final Location location) {
         //On affiche dans un Toat la nouvelle Localisation
@@ -140,9 +130,7 @@ public class MainActivity extends Activity implements LocationListener {
 
     }
 
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
     public void onProviderDisabled(final String provider) {
         //Si le GPS est désactivé on se désabonne
@@ -151,9 +139,7 @@ public class MainActivity extends Activity implements LocationListener {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
     public void onProviderEnabled(final String provider) {
         //Si le GPS est activé on s'abonne
@@ -162,9 +148,7 @@ public class MainActivity extends Activity implements LocationListener {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
     public void onStatusChanged(final String provider, final int status, final Bundle extras) { }
 }

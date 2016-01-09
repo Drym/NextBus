@@ -5,6 +5,7 @@ import org.json.JSONObject;
 
 /**
  * Created by Lucas on 08/01/2016.
+ * Permet de récupérer les coordonnées de l'arrete le plus proche
  */
 public class ArretProche {
 

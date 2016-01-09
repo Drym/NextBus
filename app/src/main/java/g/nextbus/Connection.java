@@ -1,7 +1,8 @@
 package g.nextbus;
 
 /**
- * Created by user on 08/01/2016.
+ * Created by Lucas on 08/01/2016.
+ * Gère la connection avec un serveur TCP pour récupérer des informations
  */
 public class Connection implements Runnable {
 
