@@ -15,13 +15,18 @@ import java.net.Socket;
 public class TCPClient {
 
     private String serverMessage;
-    public static final String SERVERIP = "192.168.0.102";
-    public static final int SERVERPORT = 4444;
+    private String SERVERIP = "";
+    private int SERVERPORT = 4444;
     private boolean mRun = false;
 
     PrintWriter out;
     BufferedReader in;
     Socket socket;
+
+    public TCPClient (String SERVERIP, int SERVERPORT) {
+        this.SERVERIP = SERVERIP;
+        this.SERVERPORT = SERVERPORT;
+    }
 
     /*
     Envoyer un message
@@ -62,7 +67,6 @@ public class TCPClient {
     Se connecter
      */
     public void run() {
-
 
         try {
             //Adresse IP

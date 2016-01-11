@@ -41,7 +41,10 @@ public class MainActivity extends Activity implements LocationListener {
     private double latitudeUser = 0;
     private double longitudeUser = 0;
     private boolean setZoomOnlyOnce = false;
-    public LatLng coordArret;
+    private LatLng coordArret;
+    private String IPArret;
+    private int portArret;
+
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -61,12 +64,15 @@ public class MainActivity extends Activity implements LocationListener {
         bouton1 = (Button)findViewById(R.id.bouton1);
         bouton1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                //conec = new Connection(listArret);
+
+                coordArret = arretProche.arretLePlusProche(listArret, latitudeUser, longitudeUser, IPArret, portArret);
+                markerArret.setPosition(coordArret);
+                latitude.setText("Latitude : " + coordArret.latitude);
+                longitude.setText("Longitude : " + coordArret.longitude);
+
+                //conec = new Connection(listArret, IPArret, portArret);
                 //Thread t=new Thread(conec);
                 //t.start();
-
-                coordArret = arretProche.arretLePlusProche(listArret, latitudeUser, longitudeUser);
-                markerArret.setPosition(coordArret);
             }
         });
     }
@@ -135,8 +141,8 @@ public class MainActivity extends Activity implements LocationListener {
         //Récupère la latitude et longitude de notre position
         latitudeUser =  location.getLatitude();
         longitudeUser = location.getLongitude();
-        latitude.setText("Latitude : " + location.getLatitude());
-        longitude.setText("Longitude : " + location.getLongitude());
+        //latitude.setText("Latitude : " + location.getLatitude());
+        //longitude.setText("Longitude : " + location.getLongitude());
 
     }
 
