@@ -5,6 +5,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,10 +34,14 @@ public class MainActivity extends Activity implements LocationListener {
     private Marker markerArret;
     private TextView latitude;
     private TextView longitude;
-    private Button changer;
+    private Button bouton1;
     private String listArret;
     private ArretProche arretProche;
     private Connection conec;
+    private double latitudeUser = 0;
+    private double longitudeUser = 0;
+    private boolean setZoomOnlyOnce = false;
+    public LatLng coordArret;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -46,25 +51,24 @@ public class MainActivity extends Activity implements LocationListener {
         //Création de la carte et des marker sur la carte
         gMap = ((MapFragment)getFragmentManager().findFragmentById(R.id.map)).getMap();
         marker = gMap.addMarker(new MarkerOptions().title("Vous êtes ici").position(new LatLng(0, 0)));
-        markerArret = gMap.addMarker(new MarkerOptions().title("Arret le plus proche").position(new LatLng(43.6, 7.07)));
+        markerArret = gMap.addMarker(new MarkerOptions().title("Arret le plus proche").position(new LatLng(1, 1)));
 
-        //conec = new Connection(listArret);
-        //Thread t=new Thread(conec);
-        //t.start();
 
         //Création des textes de latitude et longitude
         latitude = (TextView)findViewById(R.id.latitude);
         longitude = (TextView)findViewById(R.id.longitude);
 
-        /*changer.setOnClickListener(new View.OnClickListener() {
-            @Override
+        bouton1 = (Button)findViewById(R.id.bouton1);
+        bouton1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent secondeActivite=new Intent(MainActivity.this,SecondeActivity.class);
-                //secondeActivite.start();
+                //conec = new Connection(listArret);
+                //Thread t=new Thread(conec);
+                //t.start();
 
+                coordArret = arretProche.arretLePlusProche(listArret, latitudeUser, longitudeUser);
+                markerArret.setPosition(coordArret);
             }
-        });*/
-
+        });
     }
 
 
@@ -109,6 +113,8 @@ public class MainActivity extends Activity implements LocationListener {
 
     @Override
     public void onLocationChanged(final Location location) {
+
+        /*
         //On affiche dans un Toat la nouvelle Localisation
         final StringBuilder msg = new StringBuilder("lat : ");
         msg.append(location.getLatitude());
@@ -116,17 +122,21 @@ public class MainActivity extends Activity implements LocationListener {
         msg.append(location.getLongitude());
 
         Toast.makeText(this, msg.toString(), Toast.LENGTH_SHORT).show();
+        */
 
         //Mise à jour des coordonnées
         final LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+        if (setZoomOnlyOnce == false) {
+            gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+            setZoomOnlyOnce = true;
+        }
         marker.setPosition(latLng);
 
         //Récupère la latitude et longitude de notre position
+        latitudeUser =  location.getLatitude();
+        longitudeUser = location.getLongitude();
         latitude.setText("Latitude : " + location.getLatitude());
         longitude.setText("Longitude : " + location.getLongitude());
-
-       // String coordArret = arretProche.arretLePlusProche(listArret, location.getLatitude(), location.getLongitude());
 
     }
 

@@ -27,6 +27,15 @@
         android:layout_height="wrap_content"
         class="com.google.android.gms.maps.MapFragment" />
 
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Trouver l'arret"
+        android:id="@+id/bouton1"
+        android:layout_above="@+id/map"
+        android:layout_alignParentRight="true" />
+
 </RelativeLayout>
 
 
