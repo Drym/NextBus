@@ -37,9 +37,10 @@ public class MainActivity extends Activity implements LocationListener {
     private Marker markerArret2;
     private TextView latitude;
     private TextView longitude;
+    private EditText recherche;
     private Button bouton1;
+    private Button bouton2;
     private Handler mHandler;
-    //private Handler mHandler2;
     private ObjetTransfert objetTransfert;
     private ObjetTransfert objetTransfert2;
     private String listArret;
@@ -58,18 +59,18 @@ public class MainActivity extends Activity implements LocationListener {
         setContentView(R.layout.activity_main);
 
         //Création de la carte et des marker sur la carte
-        gMap = ((MapFragment)getFragmentManager().findFragmentById(R.id.map)).getMap();
+        gMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
         marker = gMap.addMarker(new MarkerOptions().title("Vous êtes ici").position(new LatLng(0, 0)));
         markerArret = gMap.addMarker(new MarkerOptions().title("Arret le plus proche").position(new LatLng(2, 2)));
         markerArret2 = gMap.addMarker(new MarkerOptions().title("Arret d'arrivé").position(new LatLng(0, 0)));
-
+        mHandler = new Handler();
 
         //Création des textes de latitude et longitude
         //latitude = (TextView)findViewById(R.id.latitude);
         //longitude = (TextView)findViewById(R.id.longitude);
 
         //bouton pour lancer la connection et trouver l'arret le plus proche
-        bouton1 = (Button)findViewById(R.id.bouton1);
+        bouton1 = (Button) findViewById(R.id.bouton1);
         bouton1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
@@ -82,7 +83,6 @@ public class MainActivity extends Activity implements LocationListener {
                 t.start();
 
                 //On attend un peu pour que le thread soit fini
-                mHandler = new Handler();
                 mHandler.postDelayed(new Runnable() {
                     public void run() {
                         //On récupère l'arret le plus proche
@@ -94,18 +94,24 @@ public class MainActivity extends Activity implements LocationListener {
                         //longitude.setText("Longitude : " + coordArret.longitude);
                     }
                 }, 4000);
+            }
+        });
+
+        //Bouton pour valider le texte
+        bouton2 = (Button) findViewById(R.id.bouton2);
+        bouton2.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
 
                 try {
-
                     Toast.makeText(getApplicationContext(), "Connection au Geometer...", Toast.LENGTH_SHORT).show();
 
                     objetTransfert2 = new ObjetTransfert("", "", 0);
 
-                    objetTransfert2.setMessage(((EditText)findViewById(R.id.editText)).toString());
+                    recherche = (EditText) findViewById(R.id.editText);
+                    objetTransfert2.setMessage(recherche.getText().toString());
                     Thread t2 = new Thread(new Geometer(objetTransfert2));
                     t2.start();
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -118,91 +124,92 @@ public class MainActivity extends Activity implements LocationListener {
                         //longitude.setText("Longitude : " + objetTransfert.getLatLng().longitude);
                     }
                 }, 4000);
+
             }
         });
     }
 
+            @Override
+            public void onResume() {
+                super.onResume();
 
-    @Override
-    public void onResume() {
-        super.onResume();
+                //Obtention de la référence du service
+                locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
 
-        //Obtention de la référence du service
-        locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
+                //Si le GPS est disponible, on s'y abonne
+                if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                    abonnementGPS();
+                }
+            }
 
-        //Si le GPS est disponible, on s'y abonne
-        if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            abonnementGPS();
+
+            @Override
+            public void onPause() {
+                super.onPause();
+
+                //On appelle la méthode pour se désabonner
+                desabonnementGPS();
+            }
+
+            /**
+             * Méthode permettant de s'abonner à la localisation par GPS.
+             */
+            public void abonnementGPS() {
+                //On s'abonne
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, this);
+            }
+
+            /**
+             * Méthode permettant de se désabonner de la localisation par GPS.
+             */
+            public void desabonnementGPS() {
+                //Si le GPS est disponible, on s'y abonne
+                locationManager.removeUpdates(this);
+            }
+
+
+            @Override
+            public void onLocationChanged(final Location location) {
+
+                //Mise à jour des coordonnées
+                final LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                if (setZoomOnlyOnce == false) {
+                    gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+                    setZoomOnlyOnce = true;
+                }
+                marker.setPosition(latLng);
+
+                //Récupère la latitude et longitude de notre position
+                latitudeUser = location.getLatitude();
+                longitudeUser = location.getLongitude();
+                //latitude.setText("Latitude : " + location.getLatitude());
+                //longitude.setText("Longitude : " + location.getLongitude());
+
+            }
+
+
+            @Override
+            public void onProviderDisabled(final String provider) {
+                //Si le GPS est désactivé on se désabonne
+                if ("gps".equals(provider)) {
+                    desabonnementGPS();
+                }
+            }
+
+
+            @Override
+            public void onProviderEnabled(final String provider) {
+                //Si le GPS est activé on s'abonne
+                if ("gps".equals(provider)) {
+                    abonnementGPS();
+                }
+            }
+
+
+            @Override
+            public void onStatusChanged(final String provider, final int status, final Bundle extras) {
+            }
+
         }
-    }
-
-
-    @Override
-    public void onPause() {
-        super.onPause();
-
-        //On appelle la méthode pour se désabonner
-        desabonnementGPS();
-    }
-
-    /**
-     * Méthode permettant de s'abonner à la localisation par GPS.
-     */
-    public void abonnementGPS() {
-        //On s'abonne
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, this);
-    }
-
-    /**
-     * Méthode permettant de se désabonner de la localisation par GPS.
-     */
-    public void desabonnementGPS() {
-        //Si le GPS est disponible, on s'y abonne
-        locationManager.removeUpdates(this);
-    }
-
-
-    @Override
-    public void onLocationChanged(final Location location) {
-
-        //Mise à jour des coordonnées
-        final LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        if (setZoomOnlyOnce == false) {
-            gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-            setZoomOnlyOnce = true;
-        }
-        marker.setPosition(latLng);
-
-        //Récupère la latitude et longitude de notre position
-        latitudeUser =  location.getLatitude();
-        longitudeUser = location.getLongitude();
-        //latitude.setText("Latitude : " + location.getLatitude());
-        //longitude.setText("Longitude : " + location.getLongitude());
-
-    }
-
-
-    @Override
-    public void onProviderDisabled(final String provider) {
-        //Si le GPS est désactivé on se désabonne
-        if("gps".equals(provider)) {
-            desabonnementGPS();
-        }
-    }
-
-
-    @Override
-    public void onProviderEnabled(final String provider) {
-        //Si le GPS est activé on s'abonne
-        if("gps".equals(provider)) {
-            abonnementGPS();
-        }
-    }
-
-
-    @Override
-    public void onStatusChanged(final String provider, final int status, final Bundle extras) { }
-
-}
 
 
