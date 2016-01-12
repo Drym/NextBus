@@ -27,10 +27,9 @@ public class ArretProche {
         double challangeDist;
         String bestIP = "";
         int bestPort = 0;
-        String test = "{\"1\":{\"Arrêt\": \"1\",\"Nom\":\"Templier\",\"IP\":\"123.345.434.12\",\"Port\":\" 1234\",\"Latitude\":\"43.6\",\"Longitude\":\"7.07\"},\"2\":{\"Arrêt\": \"1\",\"Nom\":\"Templier\",\"IP\":\"123.345.434.12\",\"Port\":\" 1234\",\"Latitude\":\"43.6\",\"Longitude\":\"7.07\"}}";
 
         try {
-            JSONObject reponseJSON = new JSONObject(test); //Mettre listArret
+            JSONObject reponseJSON = new JSONObject(listArret); //Mettre listArret
 
             for (Iterator iterator = reponseJSON.keys(); iterator.hasNext();) {
                 String numNoeud = (String) iterator.next();

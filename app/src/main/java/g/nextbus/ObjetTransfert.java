@@ -13,9 +13,7 @@ public class ObjetTransfert {
         this.adresseIP = adresseIP;
         this.port = port;
     }
-    public void setMessage(String b){
-        message=b;
-    }
+
     public String getMessage(){
         return message;
     }
@@ -28,6 +26,10 @@ public class ObjetTransfert {
         return port;
     }
 
+    public void setMessage(String message){
+        this.message = message;
+    }
+
     public void setAdresseIP(String adresseIP) {
         this.adresseIP = adresseIP;
     }
@@ -35,4 +37,5 @@ public class ObjetTransfert {
     public void setPort(int port) {
         this.port = port;
     }
+
 }

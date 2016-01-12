@@ -5,6 +5,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -35,16 +36,16 @@ public class MainActivity extends Activity implements LocationListener {
     private TextView latitude;
     private TextView longitude;
     private Button bouton1;
+    private Handler mHandler;
+    private ObjetTransfert objetTransfert;
     private String listArret;
     private ArretProche arretProche;
-    private Connection conec;
     private double latitudeUser = 0;
     private double longitudeUser = 0;
     private boolean setZoomOnlyOnce = false;
     private LatLng coordArret;
-    private String IPArret;
-    private int portArret;
-
+    private String IPArret = "10.212.115.218";
+    private int portArret = 4444;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -61,18 +62,33 @@ public class MainActivity extends Activity implements LocationListener {
         latitude = (TextView)findViewById(R.id.latitude);
         longitude = (TextView)findViewById(R.id.longitude);
 
+        //bouton pour lancer la connection et trouver l'arret le plus proche
         bouton1 = (Button)findViewById(R.id.bouton1);
         bouton1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                coordArret = arretProche.arretLePlusProche(listArret, latitudeUser, longitudeUser, IPArret, portArret);
-                markerArret.setPosition(coordArret);
-                latitude.setText("Latitude : " + coordArret.latitude);
-                longitude.setText("Longitude : " + coordArret.longitude);
 
-                //conec = new Connection(listArret, IPArret, portArret);
-                //Thread t=new Thread(conec);
-                //t.start();
+                Toast.makeText(getApplicationContext(), "Connection au serveur...", Toast.LENGTH_SHORT).show();
+
+                //Objet mit en paramètre pour récupérer les infos depuis le serveur
+                objetTransfert = new ObjetTransfert(listArret, IPArret, portArret);
+                //Lancement de la connection
+                Thread t = new Thread(new Connection(objetTransfert));
+                t.start();
+
+                //On attend un peu pour que le thread soit fini
+                mHandler = new Handler();
+                mHandler.postDelayed(new Runnable() {
+                    public void run() {
+                        //On récupère l'arret le plus proche
+                        coordArret = arretProche.arretLePlusProche(objetTransfert.getMessage(), latitudeUser, longitudeUser, IPArret, portArret);
+                        //On le marque sur la carte
+                        markerArret.setPosition(coordArret);
+                        //On affiche dans le texte
+                        latitude.setText("Latitude : " + coordArret.latitude);
+                        longitude.setText("Longitude : " + coordArret.longitude);
+                    }
+                }, 4000);
             }
         });
     }
@@ -167,4 +183,7 @@ public class MainActivity extends Activity implements LocationListener {
 
     @Override
     public void onStatusChanged(final String provider, final int status, final Bundle extras) { }
+
 }
+
+

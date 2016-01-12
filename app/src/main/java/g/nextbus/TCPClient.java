@@ -1,5 +1,7 @@
 package g.nextbus;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStreamReader;
@@ -15,8 +17,8 @@ import java.net.Socket;
 public class TCPClient {
 
     private String serverMessage;
-    private String SERVERIP = "";
-    private int SERVERPORT = 4444;
+    private String SERVERIP;
+    private int SERVERPORT;
     private boolean mRun = false;
 
     PrintWriter out;
@@ -77,10 +79,13 @@ public class TCPClient {
 
             //Création de outPutStream
             out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
+
             //Création de inPutStream
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
         }
-        catch (Exception e) {}
-    }
-}
+        catch (Exception e) {
+            Log.e("TCPClient", "Impossible de se connecter au serveur");
+        }
+        }
+        }
