@@ -6,6 +6,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -35,6 +36,7 @@ public class MainActivity extends Activity implements LocationListener {
     private Marker marker;
     private Marker markerArret;
     private Marker markerArret2;
+    private Marker markerArret3;
     private TextView latitude;
     private TextView longitude;
     private EditText recherche;
@@ -62,7 +64,8 @@ public class MainActivity extends Activity implements LocationListener {
         gMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
         marker = gMap.addMarker(new MarkerOptions().title("Vous êtes ici").position(new LatLng(0, 0)));
         markerArret = gMap.addMarker(new MarkerOptions().title("Arret le plus proche").position(new LatLng(2, 2)));
-        markerArret2 = gMap.addMarker(new MarkerOptions().title("Arret d'arrivé").position(new LatLng(0, 0)));
+        markerArret2 = gMap.addMarker(new MarkerOptions().title("Maison").position(new LatLng(0, 0)));
+        markerArret3 = gMap.addMarker(new MarkerOptions().title("Arret d'arrivé").position(new LatLng(0, 0)));
         mHandler = new Handler();
 
         //Création des textes de latitude et longitude
@@ -86,7 +89,10 @@ public class MainActivity extends Activity implements LocationListener {
                 mHandler.postDelayed(new Runnable() {
                     public void run() {
                         //On récupère l'arret le plus proche
-                        coordArret = arretProche.arretLePlusProche(objetTransfert.getMessage(), latitudeUser, longitudeUser, IPArret, portArret);
+
+                        arretProche = new ArretProche(objetTransfert);
+
+                        coordArret = arretProche.arretLePlusProche(objetTransfert.getMessage(), latitudeUser, longitudeUser);
                         //On le marque sur la carte
                         markerArret.setPosition(coordArret);
                         //On affiche dans le texte
@@ -119,7 +125,14 @@ public class MainActivity extends Activity implements LocationListener {
                 mHandler.postDelayed(new Runnable() {
                     public void run() {
 
+                        arretProche = new ArretProche(objetTransfert2);
+                        coordArret = arretProche.arretLePlusProche(objetTransfert.getMessage(), objetTransfert2.getLatLng().latitude, objetTransfert2.getLatLng().longitude);
+
                         markerArret2.setPosition(objetTransfert2.getLatLng());
+                        markerArret3.setPosition(coordArret);
+
+                        Toast.makeText(getApplicationContext(), "Prendre le bus de "+objetTransfert.getNomArret() + " à "+objetTransfert2.getNomArret(), Toast.LENGTH_SHORT).show();
+
                         //latitude.setText("Latitude : " + objetTransfert.getLatLng().latitude);
                         //longitude.setText("Longitude : " + objetTransfert.getLatLng().longitude);
                     }

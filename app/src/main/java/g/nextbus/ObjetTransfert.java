@@ -8,6 +8,7 @@ import com.google.android.gms.maps.model.LatLng;
 public class ObjetTransfert {
     String message;
     LatLng latLng;
+    private String nomArret;
     private String adresseIP;
     private int port;
 
@@ -47,5 +48,13 @@ public class ObjetTransfert {
 
     public void setLatLng(LatLng latLng) {
         this.latLng = latLng;
+    }
+
+    public String getNomArret() {
+        return nomArret;
+    }
+
+    public void setNomArret(String nomArret) {
+        this.nomArret = nomArret;
     }
 }

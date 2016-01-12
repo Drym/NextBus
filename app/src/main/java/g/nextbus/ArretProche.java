@@ -6,7 +6,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Iterator;
-import static java.lang.Math.*;
+
+import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
 
 /**
  * Created by Lucas on 08/01/2016.
@@ -14,7 +16,13 @@ import static java.lang.Math.*;
  */
 public class ArretProche {
 
-    public static LatLng arretLePlusProche(String listArret, double latitude, double longitude, String IPArret, int portArret){
+    private ObjetTransfert objetTransfert;
+
+    public ArretProche(ObjetTransfert objetTransfert){
+        this.objetTransfert = objetTransfert;
+    }
+
+    public LatLng arretLePlusProche(String listArret, double latitude, double longitude){
 
         LatLng latLng;
         double latitudeArret = 0;
@@ -25,11 +33,15 @@ public class ArretProche {
         double challangeLat;
         double challangeLong;
         double challangeDist;
+        String bestNom = "";
         String bestIP = "";
         int bestPort = 0;
+        String IPArret;
+        int portArret;
+        String nomArret;
 
         try {
-            JSONObject reponseJSON = new JSONObject(listArret); //Mettre listArret
+            JSONObject reponseJSON = new JSONObject(listArret);
 
             for (Iterator iterator = reponseJSON.keys(); iterator.hasNext();) {
                 String numNoeud = (String) iterator.next();
@@ -37,9 +49,9 @@ public class ArretProche {
 
                 IPArret = (String) arret.get("IP");
                 portArret = arret.getInt("Port");
+                nomArret = arret.getString("Nom");
                 latitudeArret = arret.getDouble("Latitude");
                 longitudeArret = arret.getDouble("Longitude");
-
 
                 challangeLat = pow(latitude - latitudeArret,2);
                 challangeLong = pow(longitude - longitudeArret, 2);
@@ -51,8 +63,8 @@ public class ArretProche {
                     bestLong = longitudeArret;
                     bestIP = IPArret;
                     bestPort = portArret;
+                    bestNom = nomArret;
                 }
-
             }
         }
         catch(JSONException e){
@@ -60,8 +72,10 @@ public class ArretProche {
         }
 
         latLng = new LatLng(bestLat, bestLong);
-        IPArret = bestIP;
-        portArret = bestPort;
+
+        objetTransfert.setAdresseIP(bestIP);
+        objetTransfert.setPort(bestPort);
+        objetTransfert.setNomArret(bestNom);
 
         return latLng;
     }
