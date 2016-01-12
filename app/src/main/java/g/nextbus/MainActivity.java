@@ -20,6 +20,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.json.JSONObject;
+
 import fr.rolandl.blog_gps.R;
 
 /**
@@ -42,9 +44,12 @@ public class MainActivity extends Activity implements LocationListener {
     private EditText recherche;
     private Button bouton1;
     private Button bouton2;
+    private Button bouton3;
     private Handler mHandler;
     private ObjetTransfert objetTransfert;
     private ObjetTransfert objetTransfert2;
+    private ObjetTransfert objetTransfert3;
+    private ObjetTransfert objetTransfert4;
     private String listArret;
     private ArretProche arretProche;
     private double latitudeUser = 0;
@@ -82,6 +87,7 @@ public class MainActivity extends Activity implements LocationListener {
                 //Objet mit en paramètre pour récupérer les infos depuis le serveur
                 objetTransfert = new ObjetTransfert(listArret, IPArret, portArret);
                 //Lancement de la connection
+                objetTransfert.setRequete("{\"Requete\":\"LISTARRETS\"}");
                 Thread t = new Thread(new Connection(objetTransfert));
                 t.start();
 
@@ -135,6 +141,56 @@ public class MainActivity extends Activity implements LocationListener {
 
                         //latitude.setText("Latitude : " + objetTransfert.getLatLng().latitude);
                         //longitude.setText("Longitude : " + objetTransfert.getLatLng().longitude);
+                    }
+                }, 4000);
+
+            }
+        });
+
+        //Bouton pour valider le texte
+        bouton3 = (Button) findViewById(R.id.bouton3);
+        bouton3.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                Toast.makeText(getApplicationContext(), "Connection à l'arret...", Toast.LENGTH_SHORT).show();
+
+                //Objet mit en paramètre pour récupérer les infos depuis le serveur
+                objetTransfert3 = new ObjetTransfert("", objetTransfert.getAdresseIP(), objetTransfert.getPort());
+
+                //Lancement de la connection
+                objetTransfert3.setRequete("{\"Requete\":\"BUS\",\"ArretArrive\":\"" + objetTransfert2.getNomArret() + "\"}");
+                Thread t = new Thread(new Connection(objetTransfert3));
+                t.start();
+
+                //On attend un peu pour que le thread soit fini
+                mHandler.postDelayed(new Runnable() {
+                    public void run() {
+                        Log.d("MainActivity", objetTransfert3.getMessage());
+                    }
+                }, 4000);
+
+                Toast.makeText(getApplicationContext(), "Connection au bus...", Toast.LENGTH_SHORT).show();
+
+                //Objet mit en paramètre pour récupérer les infos depuis le serveur
+                objetTransfert4 = new ObjetTransfert("", objetTransfert3.getAdresseIP(), objetTransfert3.getPort());
+                //Lancement de la connection
+
+                objetTransfert4.setRequete("{\"Requete\":\"BUS\"}");
+                t = new Thread(new Connection(objetTransfert4));
+                t.start();
+
+                //On attend un peu pour que le thread soit fini
+                mHandler.postDelayed(new Runnable() {
+                    public void run() {
+
+                        try {
+                            JSONObject numBus = new JSONObject(objetTransfert4.getMessage());
+                            numBus = (JSONObject) numBus.get("BUS");
+                            Toast.makeText(getApplicationContext(), "Prendre le bus numéro "+ numBus.getString("Bus") ,Toast.LENGTH_SHORT).show();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
                     }
                 }, 4000);
 

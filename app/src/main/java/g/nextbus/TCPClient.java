@@ -21,9 +21,9 @@ public class TCPClient {
     private int SERVERPORT;
     private boolean mRun = false;
 
-    PrintWriter out;
-    BufferedReader in;
-    Socket socket;
+    private PrintWriter out;
+    private BufferedReader in;
+    private Socket socket;
 
     public TCPClient (String SERVERIP, int SERVERPORT) {
         this.SERVERIP = SERVERIP;

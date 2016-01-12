@@ -6,8 +6,9 @@ import com.google.android.gms.maps.model.LatLng;
  * Created by Lucas on 11/01/2016.
  */
 public class ObjetTransfert {
-    String message;
-    LatLng latLng;
+    private String message;
+    private String requete;
+    private LatLng latLng;
     private String nomArret;
     private String adresseIP;
     private int port;
@@ -56,5 +57,13 @@ public class ObjetTransfert {
 
     public void setNomArret(String nomArret) {
         this.nomArret = nomArret;
+    }
+
+    public String getRequete() {
+        return requete;
+    }
+
+    public void setRequete(String requete) {
+        this.requete = requete;
     }
 }

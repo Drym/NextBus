@@ -20,9 +20,9 @@ import java.net.URLEncoder;
 public class Geometer implements Runnable  {
 
     private static final String URL = "http://maps.googleapis.com/maps/api/geocode/json";
-    double lng;
-    double lat;
-    LatLng latLng;
+    private double lng;
+    private double lat;
+    private LatLng latLng;
     private ObjetTransfert objetTransfert;
     private String fullAddress;
     private URLConnection conn;

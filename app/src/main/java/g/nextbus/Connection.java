@@ -9,7 +9,7 @@ import android.util.Log;
 public class Connection implements Runnable {
     private ObjetTransfert objetTransfert;
     private TCPClient mTcpClient;
-    String defaut = "{\"1\":{\"Arrêt\": \"1\",\"Nom\":\"Templier\",\"IP\":\"123.345.434.12\",\"Port\":\" 1234\",\"Latitude\":\"10\",\"Longitude\":\"10\"}}";
+    private String defaut = "{\"1\":{\"Arrêt\": \"1\",\"Nom\":\"Templier\",\"IP\":\"123.345.434.12\",\"Port\":\" 1234\",\"Latitude\":\"10\",\"Longitude\":\"10\"}}";
 
 
     public Connection (ObjetTransfert objetTransfert) {
@@ -26,7 +26,7 @@ public class Connection implements Runnable {
             mTcpClient = new TCPClient(objetTransfert.getAdresseIP(), objetTransfert.getPort());
             mTcpClient.run();
             //Demande la liste des arrets
-            mTcpClient.sendMessage("{\"Requete\":\"LISTARRETS\"}");
+            mTcpClient.sendMessage(objetTransfert.getRequete());
             objetTransfert.setMessage(mTcpClient.Reponse());
             //objetTransfert.setMessage(test);
             mTcpClient.stopClient();
