@@ -211,5 +211,3 @@ public class MainActivity extends Activity implements LocationListener {
             }
 
         }
-
-
