@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,11 +18,6 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
 
 import fr.rolandl.blog_gps.R;
 
@@ -69,8 +65,8 @@ public class MainActivity extends Activity implements LocationListener {
 
 
         //Création des textes de latitude et longitude
-        latitude = (TextView)findViewById(R.id.latitude);
-        longitude = (TextView)findViewById(R.id.longitude);
+        //latitude = (TextView)findViewById(R.id.latitude);
+        //longitude = (TextView)findViewById(R.id.longitude);
 
         //bouton pour lancer la connection et trouver l'arret le plus proche
         bouton1 = (Button)findViewById(R.id.bouton1);
@@ -105,7 +101,7 @@ public class MainActivity extends Activity implements LocationListener {
 
                     objetTransfert2 = new ObjetTransfert("", "", 0);
 
-                    objetTransfert2.setMessage("98 impasse de la caillenque 06550");
+                    objetTransfert2.setMessage(((EditText)findViewById(R.id.editText)).toString());
                     Thread t2 = new Thread(new Geometer(objetTransfert2));
                     t2.start();
                 }
@@ -118,8 +114,8 @@ public class MainActivity extends Activity implements LocationListener {
                     public void run() {
 
                         markerArret2.setPosition(objetTransfert2.getLatLng());
-                        latitude.setText("Latitude : " + objetTransfert.getLatLng().latitude);
-                        longitude.setText("Longitude : " + objetTransfert.getLatLng().longitude);
+                        //latitude.setText("Latitude : " + objetTransfert.getLatLng().latitude);
+                        //longitude.setText("Longitude : " + objetTransfert.getLatLng().longitude);
                     }
                 }, 4000);
             }
