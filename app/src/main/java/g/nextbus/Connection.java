@@ -9,7 +9,7 @@ import android.util.Log;
 public class Connection implements Runnable {
     private ObjetTransfert objetTransfert;
     private TCPClient mTcpClient;
-    String defaut = "{\"1\":{\"Arrêt\": \"1\",\"Nom\":\"Templier\",\"IP\":\"123.345.434.12\",\"Port\":\" 1234\",\"Latitude\":\"1\",\"Longitude\":\"1\"}}";
+    String defaut = "{\"1\":{\"Arrêt\": \"1\",\"Nom\":\"Templier\",\"IP\":\"123.345.434.12\",\"Port\":\" 1234\",\"Latitude\":\"10\",\"Longitude\":\"10\"}}";
 
 
     public Connection (ObjetTransfert objetTransfert) {

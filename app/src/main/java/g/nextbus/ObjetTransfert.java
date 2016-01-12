@@ -1,10 +1,13 @@
 package g.nextbus;
 
+import com.google.android.gms.maps.model.LatLng;
+
 /**
  * Created by Lucas on 11/01/2016.
  */
 public class ObjetTransfert {
     String message;
+    LatLng latLng;
     private String adresseIP;
     private int port;
 
@@ -38,4 +41,11 @@ public class ObjetTransfert {
         this.port = port;
     }
 
+    public LatLng getLatLng() {
+        return latLng;
+    }
+
+    public void setLatLng(LatLng latLng) {
+        this.latLng = latLng;
+    }
 }

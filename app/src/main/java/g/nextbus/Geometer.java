@@ -6,60 +6,62 @@ package g.nextbus;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 
-public class Geometer {
+public class Geometer implements Runnable  {
 
     private static final String URL = "http://maps.googleapis.com/maps/api/geocode/json";
     double lng;
     double lat;
     LatLng latLng;
-    private InputStream is;
+    private ObjetTransfert objetTransfert;
+    private String fullAddress;
+    private URLConnection conn;
+    private String out;
 
 
-    public String readIt(InputStream stream) throws IOException, UnsupportedEncodingException {
-        StringBuilder builder = new StringBuilder();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-        String line;
-        while ((line = reader.readLine()) != null) {
-            builder.append(line + "\n");
-        }
-        return builder.toString();
+    public Geometer (ObjetTransfert objetTransfert) {
+        this.objetTransfert = objetTransfert;
+
     }
 
-    public String getJSONByGoogle(String fullAddress) throws IOException {
+
+    public URL getJSONByGoogle() throws IOException {
+
+        fullAddress = objetTransfert.getMessage();
+        URL url = new URL(URL + "?address=" + URLEncoder.encode(fullAddress, "UTF-8") + "&sensor=false");
+
+        return url;
+
+    }
+
+     public void run() {
+
+         URL url = null;
+         try {
+             url = getJSONByGoogle();
+             conn = url.openConnection();
+
+             ByteArrayOutputStream output = new ByteArrayOutputStream(1024);
+
+             IOUtils.copy(conn.getInputStream(), output);
+
+             out = output.toString();
+
+         } catch (IOException e) {
+             e.printStackTrace();
+         }
 
 
-        /*URL url = new URL(URL + "?address=" + URLEncoder.encode(fullAddress, "UTF-8")+ "&sensor=false");
-
-        URLConnection conn = url.openConnection();
-
-
-        ByteArrayOutputStream output = new ByteArrayOutputStream(1024);
-
-        return conn.getInputStream();
-        */
-        /*
-        IOUtils.copy(conn.getInputStream(), output);
-
-        String out = output.toString();
-        */
-
-
-        /*
         try {
             JSONObject jsonObject = new JSONObject(out);
 
@@ -71,55 +73,13 @@ public class Geometer {
                     .getJSONObject("geometry").getJSONObject("location")
                     .getDouble("lat");
 
-            //System.out.println(lat);
-
-            //System.out.println(lng);
             latLng = new LatLng(lat, lng);
 
+            objetTransfert.setLatLng(latLng);
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        */
-       // return "aaaa";
-
-
-
-        URL url = new URL(URL + "?address=" + URLEncoder.encode(fullAddress, "UTF-8")+ "&sensor=false");
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setReadTimeout(10000 /* milliseconds */);
-        conn.setConnectTimeout(15000 /* milliseconds */);
-        conn.setRequestMethod("GET");
-        conn.setDoInput(true);
-        // Starts the query
-        conn.connect();
-        int response = conn.getResponseCode();
-        is = conn.getInputStream();
-
-        // Convert the InputStream into a string
-        String contentAsString = readIt(is);
-
-
-        try {
-            JSONObject jsonObject = new JSONObject(contentAsString);
-
-            double lng = ((JSONArray)jsonObject.get("results")).getJSONObject(0)
-                    .getJSONObject("geometry").getJSONObject("location")
-                    .getDouble("lng");
-
-            double lat = ((JSONArray)jsonObject.get("results")).getJSONObject(0)
-                    .getJSONObject("geometry").getJSONObject("location")
-                    .getDouble("lat");
-
-            System.out.println(lat);
-            System.out.println(lng);
-
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return contentAsString;
 
 
     }
