@@ -1,7 +1,7 @@
 package g.nextbus;
 
 /**
- * Created by user on 11/01/16.
+ * Created by jonathan on 11/01/16.
  */
 
 import java.io.ByteArrayOutputStream;
@@ -20,6 +20,8 @@ import org.json.JSONObject;
 public class Geometer {
 
     private static final String URL = "http://maps.googleapis.com/maps/api/geocode/json";
+    double lng;
+    double lat;
 
     public String getJSONByGoogle(String fullAddress) throws IOException {
 
@@ -36,11 +38,11 @@ public class Geometer {
         try {
             JSONObject jsonObject = new JSONObject(out);
 
-            double lng = ((JSONArray)jsonObject.get("results")).getJSONObject(0)
+            lng = ((JSONArray)jsonObject.get("results")).getJSONObject(0)
                     .getJSONObject("geometry").getJSONObject("location")
                     .getDouble("lng");
 
-            double lat = ((JSONArray)jsonObject.get("results")).getJSONObject(0)
+            lat = ((JSONArray)jsonObject.get("results")).getJSONObject(0)
                     .getJSONObject("geometry").getJSONObject("location")
                     .getDouble("lat");
 

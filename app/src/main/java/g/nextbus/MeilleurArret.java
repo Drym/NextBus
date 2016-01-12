@@ -11,7 +11,7 @@ import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 
 /**
- * Created by user on 11/01/16.
+ * Created by jonathan on 11/01/16.
  */
 public class MeilleurArret {
 
