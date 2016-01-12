@@ -87,5 +87,5 @@ public class TCPClient {
         catch (Exception e) {
             Log.e("TCPClient", "Impossible de se connecter au serveur");
         }
-        }
-        }
+    }
+}

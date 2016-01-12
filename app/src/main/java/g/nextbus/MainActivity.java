@@ -18,6 +18,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
+
 import fr.rolandl.blog_gps.R;
 
 /**
@@ -33,6 +38,7 @@ public class MainActivity extends Activity implements LocationListener {
     private GoogleMap gMap;
     private Marker marker;
     private Marker markerArret;
+    private Marker markerArret2;
     private TextView latitude;
     private TextView longitude;
     private Button bouton1;
@@ -46,6 +52,7 @@ public class MainActivity extends Activity implements LocationListener {
     private LatLng coordArret;
     private String IPArret = "10.212.115.218";
     private int portArret = 4444;
+    private Geometer geometer;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -55,7 +62,8 @@ public class MainActivity extends Activity implements LocationListener {
         //Création de la carte et des marker sur la carte
         gMap = ((MapFragment)getFragmentManager().findFragmentById(R.id.map)).getMap();
         marker = gMap.addMarker(new MarkerOptions().title("Vous êtes ici").position(new LatLng(0, 0)));
-        markerArret = gMap.addMarker(new MarkerOptions().title("Arret le plus proche").position(new LatLng(1, 1)));
+        markerArret = gMap.addMarker(new MarkerOptions().title("Arret le plus proche").position(new LatLng(0, 0)));
+        markerArret2 = gMap.addMarker(new MarkerOptions().title("Arret d'arrivé").position(new LatLng(0, 0)));
 
 
         //Création des textes de latitude et longitude
@@ -85,10 +93,27 @@ public class MainActivity extends Activity implements LocationListener {
                         //On le marque sur la carte
                         markerArret.setPosition(coordArret);
                         //On affiche dans le texte
-                        latitude.setText("Latitude : " + coordArret.latitude);
-                        longitude.setText("Longitude : " + coordArret.longitude);
+                        //latitude.setText("Latitude : " + coordArret.latitude);
+                        //longitude.setText("Longitude : " + coordArret.longitude);
                     }
                 }, 4000);
+
+                geometer = new Geometer();
+                try {
+                    //coordArret = geometer.getJSONByGoogle("98 impasse de la caillenque 06550");
+
+                    InputStream test =  geometer.getJSONByGoogle("98 impasse de la caillenque 06550");
+
+                    Toast.makeText(getApplicationContext(), test.toString(), Toast.LENGTH_SHORT).show();
+
+                    markerArret2.setPosition(coordArret);
+                    latitude.setText("Latitude : " + coordArret.latitude);
+                    longitude.setText("Longitude : " + coordArret.longitude);
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
+
             }
         });
     }
