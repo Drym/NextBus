@@ -12,14 +12,13 @@ import java.net.Socket;
 
 /**
  * Created by Lucas on 08/01/2016.
+ *
  */
 
 public class TCPClient {
 
-    private String serverMessage;
     private String SERVERIP;
     private int SERVERPORT;
-    private boolean mRun = false;
 
     private PrintWriter out;
     private BufferedReader in;

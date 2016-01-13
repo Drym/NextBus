@@ -31,9 +31,7 @@ public class Geometer implements Runnable  {
 
     public Geometer (ObjetTransfert objetTransfert) {
         this.objetTransfert = objetTransfert;
-
     }
-
 
     public URL getJSONByGoogle() throws IOException {
 
@@ -41,7 +39,6 @@ public class Geometer implements Runnable  {
         URL url = new URL(URL + "?address=" + URLEncoder.encode(fullAddress, "UTF-8") + "&sensor=false");
 
         return url;
-
     }
 
      public void run() {
@@ -80,8 +77,6 @@ public class Geometer implements Runnable  {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-
     }
 
 }
