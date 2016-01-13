@@ -7,6 +7,9 @@ import com.google.android.gms.maps.model.LatLng;
  * Permet de récupérer des informations dans des Threads
  */
 public class ObjetTransfert {
+    /*
+    Variables
+     */
     private String message;
     private String requete;
     private LatLng latLng;
@@ -14,6 +17,9 @@ public class ObjetTransfert {
     private String adresseIP;
     private int port;
 
+    /*
+    Constructeurs
+     */
     public ObjetTransfert(){}
 
     public ObjetTransfert(String adresseIP, int port){
@@ -21,6 +27,9 @@ public class ObjetTransfert {
         this.port = port;
     }
 
+    /*
+    Getters et Setters
+     */
     public String getMessage(){
         return message;
     }

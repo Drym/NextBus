@@ -26,6 +26,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.concurrent.ExecutionException;
 
 import fr.rolandl.blog_gps.R;
 
@@ -60,6 +61,10 @@ public class MainActivity extends Activity implements LocationListener {
     private String IPArret = "10.212.115.218";
     private int portArret = 4444;
 
+    /*******************************************************/
+    /** FONCTIONS.
+     /*******************************************************/
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,40 +83,47 @@ public class MainActivity extends Activity implements LocationListener {
         bouton2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                Toast.makeText(getApplicationContext(), "Connection au serveur...", Toast.LENGTH_SHORT).show();
+                try {
+                    Toast.makeText(getApplicationContext(), "Connection au serveur...", Toast.LENGTH_SHORT).show();
 
-                //Objet mit en paramètre pour récupérer les infos depuis le serveur
-                objetTransfert = new ObjetTransfert(IPArret, portArret);
-                //Lancement de la connection
-                objetTransfert.setRequete("{\"Requete\":\"LISTARRETS\"}");
-                Thread t = new Thread(new Connection(objetTransfert));
-                t.start();
+                    //Objet mit en paramètre pour récupérer les infos depuis le serveur
+                    objetTransfert = new ObjetTransfert(IPArret, portArret);
+                    //Lancement de la connection
+                    objetTransfert.setRequete("{\"Requete\":\"LISTARRETS\"}");
+                    Thread t = new Thread(new Connection(objetTransfert));
+                    t.start();
 
-                //On attend un peu pour que le thread soit fini
-                mHandler.postDelayed(new Runnable() {
-                    public void run() {
-                        //On récupère l'arret le plus proche
-                        arretProche = new ArretProche(objetTransfert);
+                }catch (Exception e) {
+                    Log.e("MainActivity", "Echec de connection au serveur");
+                }
 
-                        coordArret = arretProche.arretLePlusProche(objetTransfert.getMessage(), latitudeUser, longitudeUser);
+                    //On attend un peu pour que le thread soit fini
+                    mHandler.postDelayed(new Runnable() {
+                        public void run() {
+                            try {
+                                //On récupère l'arret le plus proche
+                                arretProche = new ArretProche(objetTransfert);
 
-                        //On le marque sur la carte
-                        markerArret.setPosition(coordArret);
-                        /*
-                        File file = new File("test.png");
+                                coordArret = arretProche.arretLePlusProche(objetTransfert.getMessage(), latitudeUser, longitudeUser);
 
-                        Bitmap bit = BitmapFactory.decodeFile(String.valueOf(file));
+                                //On le marque sur la carte
+                                markerArret.setPosition(coordArret);
+                                /*
+                                File file = new File("test.png");
+                                Bitmap bit = BitmapFactory.decodeFile(String.valueOf(file));
+                                arretProche = new ArretProche(objetTransfert);
+                                coordArret = arretProche.arretLePlusProche(objetTransfert.getMessage(), latitudeUser, longitudeUser);
+                                //On le marque sur la carte
+                                MarkerOptions marker = new MarkerOptions().position(coordArret).icon(BitmapDescriptorFactory.fromBitmap(bit));
+                                gMap.addMarker(marker);
+                                */
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
 
-                        arretProche = new ArretProche(objetTransfert);
+                    }, 4000);
 
-                        coordArret = arretProche.arretLePlusProche(objetTransfert.getMessage(), latitudeUser, longitudeUser);
-                        //On le marque sur la carte
-
-                        MarkerOptions marker = new MarkerOptions().position(coordArret).icon(BitmapDescriptorFactory.fromBitmap(bit));
-                        gMap.addMarker(marker);
-                        */
-                    }
-                }, 4000);
             //}
         //});
 
@@ -132,7 +144,7 @@ public class MainActivity extends Activity implements LocationListener {
                     Thread t2 = new Thread(new Geometer(objetTransfert2));
                     t2.start();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Log.e("MainActivity", "Echec de connection au Geometer");
                 }
 
                 //Permet de trouver le bus le plus proche de maison
@@ -169,32 +181,39 @@ public class MainActivity extends Activity implements LocationListener {
                 //On attend un peu pour que le thread soit fini
                 mHandler.postDelayed(new Runnable() {
                     public void run() {
+                        try {
 //                      Log.d("MainActivity", objetTransfert3.getMessage());
 
-                        //Connection à l'arret pour récupérer les infos du bus
-                        Toast.makeText(getApplicationContext(), "Connection à l'arret...", Toast.LENGTH_SHORT).show();
+                            //Connection à l'arret pour récupérer les infos du bus
+                            Toast.makeText(getApplicationContext(), "Connection à l'arret...", Toast.LENGTH_SHORT).show();
 
-                        //Objet mit en paramètre pour récupérer les infos depuis le serveur
-                        objetTransfert3 = new ObjetTransfert(objetTransfert.getAdresseIP(), objetTransfert.getPort());
+                            //Objet mit en paramètre pour récupérer les infos depuis le serveur
+                            objetTransfert3 = new ObjetTransfert(objetTransfert.getAdresseIP(), objetTransfert.getPort());
 
-                        //Lancement de la connection
-                        objetTransfert3.setRequete("{\"Requete\":\"BUS\",\"ArretArrive\":\"" + objetTransfert2.getNomArret() + "\"}");
-                        Thread t = new Thread(new Connection(objetTransfert3));
-                        t.start();
-
+                            //Lancement de la connection
+                            objetTransfert3.setRequete("{\"Requete\":\"BUS\",\"ArretArrive\":\"" + objetTransfert2.getNomArret() + "\"}");
+                            Thread t = new Thread(new Connection(objetTransfert3));
+                            t.start();
+                        } catch (Exception e) {
+                            Log.e("MainActivity", "Echec de connection à l'arret");
+                        }
 
                         mHandler.postDelayed(new Runnable() {
                             public void run() {
-                                //Connection au bus pour récupérer les information du bus
-                                Toast.makeText(getApplicationContext(), "Connection au bus...", Toast.LENGTH_SHORT).show();
+                                try {
+                                    //Connection au bus pour récupérer les information du bus
+                                    Toast.makeText(getApplicationContext(), "Connection au bus...", Toast.LENGTH_SHORT).show();
 
-                                //Objet mit en paramètre pour récupérer les infos depuis le serveur
-                                objetTransfert4 = new ObjetTransfert(objetTransfert3.getAdresseIP(), objetTransfert3.getPort());
+                                    //Objet mit en paramètre pour récupérer les infos depuis le serveur
+                                    objetTransfert4 = new ObjetTransfert(objetTransfert3.getAdresseIP(), objetTransfert3.getPort());
 
-                                //Lancement de la connection
-                                objetTransfert4.setRequete("{\"Requete\":\"BUS\"}");
-                                Thread t = new Thread(new Connection(objetTransfert4));
-                                t.start();
+                                    //Lancement de la connection
+                                    objetTransfert4.setRequete("{\"Requete\":\"BUS\"}");
+                                    Thread t = new Thread(new Connection(objetTransfert4));
+                                    t.start();
+                                } catch (Exception e) {
+                                    Log.e("MainActivity", "Echec de connection au bus");
+                                }
 
                                 //On attend un peu pour que le thread soit fini
                                 mHandler.postDelayed(new Runnable() {

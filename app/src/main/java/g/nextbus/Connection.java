@@ -7,19 +7,25 @@ import android.util.Log;
  * Gère la connection avec un serveur TCP pour récupérer des informations
  */
 public class Connection implements Runnable {
+
+    /*
+    Variables
+     */
     private ObjetTransfert objetTransfert;
     private TCPClient mTcpClient;
-    private String defaut = "{\"1\":{\"Arrêt\": \"1\",\"Nom\":\"Templier\",\"IP\":\"10.212.115.127\",\"Port\":\"1240\",\"Latitude\":\"0\",\"Longitude\":\"0\"}}";
 
-
+    /*
+    Constructeur
+     */
     public Connection (ObjetTransfert objetTransfert) {
         this.objetTransfert = objetTransfert;
 
     }
 
+    /**
+     * Lance la connection TCP
+     */
     public void run() {
-
-        objetTransfert.setMessage(defaut);
 
         try {
             //On se connecte au serveur

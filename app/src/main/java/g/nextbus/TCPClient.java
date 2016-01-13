@@ -12,11 +12,14 @@ import java.net.Socket;
 
 /**
  * Created by Lucas on 08/01/2016.
- *
+ * Permet d'établir une connection TCP avec une adresse et un port
  */
 
 public class TCPClient {
 
+    /*
+    Variable
+     */
     private String SERVERIP;
     private int SERVERPORT;
 
@@ -24,21 +27,26 @@ public class TCPClient {
     private BufferedReader in;
     private Socket socket;
 
+    /*
+    Constructeur
+     */
     public TCPClient (String SERVERIP, int SERVERPORT) {
         this.SERVERIP = SERVERIP;
         this.SERVERPORT = SERVERPORT;
     }
 
-    /*
-    Envoyer un message
+    /**
+     * Envois d'un message
+     * @param message
      */
     public void sendMessage(String message){
         out.println(message);
         out.flush();
     }
 
-    /*
-    Récupérer la réponse
+    /**
+     * Récupération de la réponse
+     * @return ce qui à été lu
      */
     public String Reponse()  {
 
@@ -51,8 +59,8 @@ public class TCPClient {
 
     }
 
-    /*
-    Se déconnecter
+    /**
+     * Déconnection du client
      */
     public void stopClient() {
 
@@ -64,8 +72,8 @@ public class TCPClient {
         catch (Exception e) {}
     }
 
-    /*
-    Se connecter
+    /**
+     * Lancement de la connection
      */
     public void run() {
 
