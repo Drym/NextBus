@@ -37,28 +37,26 @@ import fr.rolandl.blog_gps.R;
  */
 public class MainActivity extends Activity implements LocationListener {
     /*******************************************************/
-    /** ATTRIBUTS.
+    /** VARIABLES.
      /*******************************************************/
+    private static String IP_SERVEUR = "10.212.115.218";
+    private static int PORT_SERVEUR = 4444;
+
     private LocationManager locationManager;
     private GoogleMap gMap;
+    private Handler mHandler;
+
     private Marker marker;
     private Marker markerArret;
     private Marker markerArret2;
     private Marker markerArret3;
-    private EditText recherche;
-    private Button bouton2;
-    private Handler mHandler;
+
     private ObjetTransfert objetTransfert;
     private ObjetTransfert objetTransfert2;
     private ObjetTransfert objetTransfert3;
     private ObjetTransfert objetTransfert4;
-    private ArretProche arretProche;
-    private double latitudeUser = 0;
-    private double longitudeUser = 0;
+
     private boolean setZoomOnlyOnce = false;
-    private LatLng coordArret;
-    private String IPArret = "10.212.115.218";
-    private int portArret = 4444;
 
     /*******************************************************/
     /** FONCTIONS.
@@ -78,7 +76,7 @@ public class MainActivity extends Activity implements LocationListener {
         mHandler = new Handler();
 
         //Bouton pour lancer tout le processus de connection
-        bouton2 = (Button) findViewById(R.id.bouton2);
+        Button bouton2 = (Button) findViewById(R.id.bouton2);
         bouton2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
@@ -87,7 +85,7 @@ public class MainActivity extends Activity implements LocationListener {
                     Toast.makeText(getApplicationContext(), "Connection au serveur...", Toast.LENGTH_SHORT).show();
 
                     //Objet mit en paramètre pour récupérer les informations depuis le serveur
-                    objetTransfert = new ObjetTransfert(IPArret, portArret);
+                    objetTransfert = new ObjetTransfert(IP_SERVEUR, PORT_SERVEUR);
 
                     //Lancement de la connection en mettant en paramètre objetTransfort qui contient la requete
                     objetTransfert.setRequete("{\"Requete\":\"LISTARRETS\"}");
@@ -103,8 +101,8 @@ public class MainActivity extends Activity implements LocationListener {
                     public void run() {
                         try {
                             //On récupère l'arret le plus proche
-                            arretProche = new ArretProche(objetTransfert);
-                            coordArret = arretProche.arretLePlusProche(objetTransfert.getMessage(), latitudeUser, longitudeUser);
+                            ArretProche  arretProche = new ArretProche(objetTransfert);
+                            LatLng coordArret = arretProche.arretLePlusProche(objetTransfert.getMessage(), 0, 0);
 
                             //On le marque sur la carte
                             markerArret.setTitle("Arret le plus proche: "+objetTransfert.getNomArret());
@@ -131,7 +129,7 @@ public class MainActivity extends Activity implements LocationListener {
 
                     //Création de l'objet de transfert et ajout du texte récupéré dans la barre de recherche
                     objetTransfert2 = new ObjetTransfert();
-                    recherche = (EditText) findViewById(R.id.editText);
+                    EditText recherche = (EditText) findViewById(R.id.editText);
                     objetTransfert2.setMessage(recherche.getText().toString());
 
                     //Lancement de la connection
@@ -149,8 +147,8 @@ public class MainActivity extends Activity implements LocationListener {
                         //try pour si on a rentré un recherche vide
                         try {
                             //Récupération de l'arret le plus proche de la destination
-                            arretProche = new ArretProche(objetTransfert2);
-                            coordArret = arretProche.arretLePlusProche(objetTransfert.getMessage(), objetTransfert2.getLatLng().latitude, objetTransfert2.getLatLng().longitude);
+                            ArretProche arretProche = new ArretProche(objetTransfert2);
+                            LatLng coordArret = arretProche.arretLePlusProche(objetTransfert.getMessage(), objetTransfert2.getLatLng().latitude, objetTransfert2.getLatLng().longitude);
 
                             //Ajout du marker de la destination et de l'arret le plus proche de celle-ci
                             markerArret2.setPosition(objetTransfert2.getLatLng());
