@@ -68,18 +68,14 @@ public class MainActivity extends Activity implements LocationListener {
         //Création de la carte et des marker sur la carte
         gMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
         marker = gMap.addMarker(new MarkerOptions().title("Vous êtes ici").position(new LatLng(0, 0)));
-        markerArret = gMap.addMarker(new MarkerOptions().title("Arret le plus proche").position(new LatLng(2, 2)));
+        markerArret = gMap.addMarker(new MarkerOptions().title("Arret le plus proche").position(new LatLng(0, 0)));
         markerArret2 = gMap.addMarker(new MarkerOptions().title("Maison").position(new LatLng(0, 0)));
         markerArret3 = gMap.addMarker(new MarkerOptions().title("Arret d'arrivé").position(new LatLng(0, 0)));
         mHandler = new Handler();
 
-        //Création des textes de latitude et longitude
-        //latitude = (TextView)findViewById(R.id.latitude);
-        //longitude = (TextView)findViewById(R.id.longitude);
-
         //bouton pour lancer la connection et trouver l'arret le plus proche
-        bouton1 = (Button) findViewById(R.id.bouton1);
-        bouton1.setOnClickListener(new View.OnClickListener() {
+        bouton2 = (Button) findViewById(R.id.bouton2);
+        bouton2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
                 Toast.makeText(getApplicationContext(), "Connection au serveur...", Toast.LENGTH_SHORT).show();
@@ -95,25 +91,23 @@ public class MainActivity extends Activity implements LocationListener {
                 mHandler.postDelayed(new Runnable() {
                     public void run() {
                         //On récupère l'arret le plus proche
-
                         arretProche = new ArretProche(objetTransfert);
 
                         coordArret = arretProche.arretLePlusProche(objetTransfert.getMessage(), latitudeUser, longitudeUser);
                         //On le marque sur la carte
                         markerArret.setPosition(coordArret);
-                        //On affiche dans le texte
-                        //latitude.setText("Latitude : " + coordArret.latitude);
-                        //longitude.setText("Longitude : " + coordArret.longitude);
                     }
                 }, 4000);
-            }
-        });
+            //}
+        //});
 
         //Bouton pour valider le texte
+        /*
         bouton2 = (Button) findViewById(R.id.bouton2);
         bouton2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
+        */
+                //Permet de trouver les coordonnées de la destination saisie dans la barre de recherche
                 try {
                     Toast.makeText(getApplicationContext(), "Connection au Geometer...", Toast.LENGTH_SHORT).show();
 
@@ -127,7 +121,7 @@ public class MainActivity extends Activity implements LocationListener {
                     e.printStackTrace();
                 }
 
-                //mHandler2 = new Handler();
+                //Permet de trouver le bus le plus proche de maison
                 mHandler.postDelayed(new Runnable() {
                     public void run() {
 
@@ -139,19 +133,19 @@ public class MainActivity extends Activity implements LocationListener {
 
                         Toast.makeText(getApplicationContext(), "Prendre le bus de "+objetTransfert.getNomArret() + " à "+objetTransfert2.getNomArret(), Toast.LENGTH_SHORT).show();
 
-                        //latitude.setText("Latitude : " + objetTransfert.getLatLng().latitude);
-                        //longitude.setText("Longitude : " + objetTransfert.getLatLng().longitude);
                     }
                 }, 4000);
 
-            }
-        });
+            //}
+        //});
 
         //Bouton pour valider le texte
+        /*
         bouton3 = (Button) findViewById(R.id.bouton3);
         bouton3.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
+        */
+                //Connection à l'arret pour récupérer les infos du bus
                 Toast.makeText(getApplicationContext(), "Connection à l'arret...", Toast.LENGTH_SHORT).show();
 
                 //Objet mit en paramètre pour récupérer les infos depuis le serveur
@@ -159,22 +153,24 @@ public class MainActivity extends Activity implements LocationListener {
 
                 //Lancement de la connection
                 objetTransfert3.setRequete("{\"Requete\":\"BUS\",\"ArretArrive\":\"" + objetTransfert2.getNomArret() + "\"}");
-                Thread t = new Thread(new Connection(objetTransfert3));
+                t = new Thread(new Connection(objetTransfert3));
                 t.start();
 
                 //On attend un peu pour que le thread soit fini
+                /*
                 mHandler.postDelayed(new Runnable() {
                     public void run() {
                         Log.d("MainActivity", objetTransfert3.getMessage());
                     }
                 }, 4000);
-
+                */
+                //Connection au bus pour récupérer les information du bus
                 Toast.makeText(getApplicationContext(), "Connection au bus...", Toast.LENGTH_SHORT).show();
 
                 //Objet mit en paramètre pour récupérer les infos depuis le serveur
                 objetTransfert4 = new ObjetTransfert("", objetTransfert3.getAdresseIP(), objetTransfert3.getPort());
-                //Lancement de la connection
 
+                //Lancement de la connection
                 objetTransfert4.setRequete("{\"Requete\":\"BUS\"}");
                 t = new Thread(new Connection(objetTransfert4));
                 t.start();
