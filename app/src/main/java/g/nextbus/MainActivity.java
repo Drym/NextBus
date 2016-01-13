@@ -52,7 +52,6 @@ public class MainActivity extends Activity implements LocationListener {
     private ObjetTransfert objetTransfert2;
     private ObjetTransfert objetTransfert3;
     private ObjetTransfert objetTransfert4;
-    private String listArret;
     private ArretProche arretProche;
     private double latitudeUser = 0;
     private double longitudeUser = 0;
@@ -78,17 +77,19 @@ public class MainActivity extends Activity implements LocationListener {
         markerArret3 = gMap.addMarker(new MarkerOptions().title("Arret d'arrivé").position(new LatLng(0, 0)));
         mHandler = new Handler();
 
-        //bouton pour lancer la connection et trouver l'arret le plus proche
+        //Bouton pour lancer tout le processus de connection
         bouton2 = (Button) findViewById(R.id.bouton2);
         bouton2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
+                //Connection au serveur pour récupérer la liste des arrets
                 try {
                     Toast.makeText(getApplicationContext(), "Connection au serveur...", Toast.LENGTH_SHORT).show();
 
-                    //Objet mit en paramètre pour récupérer les infos depuis le serveur
+                    //Objet mit en paramètre pour récupérer les informations depuis le serveur
                     objetTransfert = new ObjetTransfert(IPArret, portArret);
-                    //Lancement de la connection
+
+                    //Lancement de la connection en mettant en paramètre objetTransfort qui contient la requete
                     objetTransfert.setRequete("{\"Requete\":\"LISTARRETS\"}");
                     Thread t = new Thread(new Connection(objetTransfert));
                     t.start();
@@ -97,70 +98,68 @@ public class MainActivity extends Activity implements LocationListener {
                     Log.e("MainActivity", "Echec de connection au serveur");
                 }
 
-                    //On attend un peu pour que le thread soit fini
-                    mHandler.postDelayed(new Runnable() {
-                        public void run() {
-                            try {
-                                //On récupère l'arret le plus proche
-                                arretProche = new ArretProche(objetTransfert);
+                //On attend un peu pour que le thread soit fini
+                mHandler.postDelayed(new Runnable() {
+                    public void run() {
+                        try {
+                            //On récupère l'arret le plus proche
+                            arretProche = new ArretProche(objetTransfert);
+                            coordArret = arretProche.arretLePlusProche(objetTransfert.getMessage(), latitudeUser, longitudeUser);
 
-                                coordArret = arretProche.arretLePlusProche(objetTransfert.getMessage(), latitudeUser, longitudeUser);
-
-                                //On le marque sur la carte
-                                markerArret.setPosition(coordArret);
-                                /*
-                                File file = new File("test.png");
-                                Bitmap bit = BitmapFactory.decodeFile(String.valueOf(file));
-                                arretProche = new ArretProche(objetTransfert);
-                                coordArret = arretProche.arretLePlusProche(objetTransfert.getMessage(), latitudeUser, longitudeUser);
-                                //On le marque sur la carte
-                                MarkerOptions marker = new MarkerOptions().position(coordArret).icon(BitmapDescriptorFactory.fromBitmap(bit));
-                                gMap.addMarker(marker);
-                                */
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+                            //On le marque sur la carte
+                            markerArret.setTitle("Arret le plus proche: "+objetTransfert.getNomArret());
+                            markerArret.setPosition(coordArret);
+                            /*
+                            File file = new File("test.png");
+                            Bitmap bit = BitmapFactory.decodeFile(String.valueOf(file));
+                            arretProche = new ArretProche(objetTransfert);
+                            coordArret = arretProche.arretLePlusProche(objetTransfert.getMessage(), latitudeUser, longitudeUser);
+                            //On le marque sur la carte
+                            MarkerOptions marker = new MarkerOptions().position(coordArret).icon(BitmapDescriptorFactory.fromBitmap(bit));
+                            gMap.addMarker(marker);
+                            */
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
+                    }
 
-                    }, 4000);
+                }, 4000);
 
-            //}
-        //});
-
-        //Bouton pour valider le texte
-        /*
-        bouton2 = (Button) findViewById(R.id.bouton2);
-        bouton2.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-        */
                 //Permet de trouver les coordonnées de la destination saisie dans la barre de recherche
                 try {
                     Toast.makeText(getApplicationContext(), "Connection au Geometer...", Toast.LENGTH_SHORT).show();
 
+                    //Création de l'objet de transfert et ajout du texte récupéré dans la barre de recherche
                     objetTransfert2 = new ObjetTransfert();
-
                     recherche = (EditText) findViewById(R.id.editText);
                     objetTransfert2.setMessage(recherche.getText().toString());
+
+                    //Lancement de la connection
                     Thread t2 = new Thread(new Geometer(objetTransfert2));
                     t2.start();
+
                 } catch (Exception e) {
                     Log.e("MainActivity", "Echec de connection au Geometer");
                 }
 
-                //Permet de trouver le bus le plus proche de maison
+                //Permet de trouver le bus le plus proche de l'adresse saisie
                 mHandler.postDelayed(new Runnable() {
                     public void run() {
 
                         //try pour si on a rentré un recherche vide
                         try {
+                            //Récupération de l'arret le plus proche de la destination
                             arretProche = new ArretProche(objetTransfert2);
-
                             coordArret = arretProche.arretLePlusProche(objetTransfert.getMessage(), objetTransfert2.getLatLng().latitude, objetTransfert2.getLatLng().longitude);
 
+                            //Ajout du marker de la destination et de l'arret le plus proche de celle-ci
                             markerArret2.setPosition(objetTransfert2.getLatLng());
+                            markerArret3.setTitle("Arret d'arrivé: "+ objetTransfert2.getNomArret());
                             markerArret3.setPosition(coordArret);
 
+                            //Affiche les noms de arrets à prendre
                             Toast.makeText(getApplicationContext(), "Prendre le bus de " + objetTransfert.getNomArret() + " à " + objetTransfert2.getNomArret(), Toast.LENGTH_SHORT).show();
+
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -168,49 +167,40 @@ public class MainActivity extends Activity implements LocationListener {
                     }
                 }, 4000);
 
-            //}
-        //});
-
-        //Bouton pour valider le texte
-        /*
-        bouton3 = (Button) findViewById(R.id.bouton3);
-        bouton3.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-        */
 
                 //On attend un peu pour que le thread soit fini
                 mHandler.postDelayed(new Runnable() {
                     public void run() {
+                        //Connection à l'arret pour récupérer les infos du bus
                         try {
-//                      Log.d("MainActivity", objetTransfert3.getMessage());
-
-                            //Connection à l'arret pour récupérer les infos du bus
                             Toast.makeText(getApplicationContext(), "Connection à l'arret...", Toast.LENGTH_SHORT).show();
 
                             //Objet mit en paramètre pour récupérer les infos depuis le serveur
                             objetTransfert3 = new ObjetTransfert(objetTransfert.getAdresseIP(), objetTransfert.getPort());
-
-                            //Lancement de la connection
                             objetTransfert3.setRequete("{\"Requete\":\"BUS\",\"ArretArrive\":\"" + objetTransfert2.getNomArret() + "\"}");
+
+                            //Lancement de la connection en mettant en paramètre objetTransfort qui contient la requete
                             Thread t = new Thread(new Connection(objetTransfert3));
                             t.start();
+
                         } catch (Exception e) {
                             Log.e("MainActivity", "Echec de connection à l'arret");
                         }
 
                         mHandler.postDelayed(new Runnable() {
                             public void run() {
+                                //Connection au bus pour récupérer les information du bus
                                 try {
-                                    //Connection au bus pour récupérer les information du bus
                                     Toast.makeText(getApplicationContext(), "Connection au bus...", Toast.LENGTH_SHORT).show();
 
                                     //Objet mit en paramètre pour récupérer les infos depuis le serveur
                                     objetTransfert4 = new ObjetTransfert(objetTransfert3.getAdresseIP(), objetTransfert3.getPort());
 
-                                    //Lancement de la connection
+                                    //Lancement de la connection en mettant en paramètre objetTransfort qui contient la requete
                                     objetTransfert4.setRequete("{\"Requete\":\"BUS\"}");
                                     Thread t = new Thread(new Connection(objetTransfert4));
                                     t.start();
+
                                 } catch (Exception e) {
                                     Log.e("MainActivity", "Echec de connection au bus");
                                 }
@@ -220,6 +210,7 @@ public class MainActivity extends Activity implements LocationListener {
                                     public void run() {
 
                                         try {
+                                            //Affiche un message du numéro de bus à prendre
                                             JSONObject numBus = new JSONObject(objetTransfert4.getMessage());
                                             numBus = (JSONObject) numBus.get("BUS");
                                             Toast.makeText(getApplicationContext(), "Prendre le bus numéro "+ numBus.getString("Bus") ,Toast.LENGTH_SHORT).show();
@@ -285,12 +276,6 @@ public class MainActivity extends Activity implements LocationListener {
                     setZoomOnlyOnce = true;
                 }
                 marker.setPosition(latLng);
-
-                //Récupère la latitude et longitude de notre position
-                latitudeUser = location.getLatitude();
-                longitudeUser = location.getLongitude();
-                //latitude.setText("Latitude : " + location.getLatitude());
-                //longitude.setText("Longitude : " + location.getLongitude());
 
             }
 
