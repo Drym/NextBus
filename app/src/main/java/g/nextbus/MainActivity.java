@@ -62,6 +62,9 @@ public class MainActivity extends Activity implements LocationListener {
     private boolean setZoomOnlyOnce = false;
 
     private String locationNextArret;
+    private String locationDestArret;
+
+
 
     /*******************************************************/
     /**
@@ -80,9 +83,11 @@ public class MainActivity extends Activity implements LocationListener {
            @Override
            public void onClick(View v) {
                locationNextArret = objetTransfert.getNomArret();
+               locationDestArret = objetTransfert2.getNomArret();
                Intent intent = new Intent(MainActivity.this, InformationActivity.class);
                Bundle bundle = new Bundle();
                bundle.putString("ARRET",locationNextArret);
+               bundle.putString("ARRETDEST",locationNextArret);
                intent.putExtras(bundle);
                MainActivity.this.startActivity(intent);
            }

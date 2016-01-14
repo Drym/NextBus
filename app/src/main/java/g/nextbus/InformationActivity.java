@@ -23,10 +23,21 @@ public class InformationActivity extends Activity {
 
 
           Bundle bundle = getIntent().getExtras();
+
+          //recuperation des bundles
           String arretProcheRecup = bundle.getString("ARRET");
+          String arretDestiRecup = bundle.getString("ARRETDEST");
 
           TextView t1 = (TextView) findViewById(R.id.textView2);
           t1.setText(arretProcheRecup);
+
+          TextView t2 = (TextView) findViewById(R.id.textView7);
+          t2.setText(arretProcheRecup);
+
+          TextView t3 = (TextView) findViewById(R.id.textView9);
+          t3.setText(arretDestiRecup);
+
+
       }
 
 }
