@@ -63,6 +63,7 @@ public class MainActivity extends Activity implements LocationListener {
 
     private String locationNextArret;
     private String locationDestArret;
+    private int numeroLigne;
 
 
 
@@ -84,10 +85,13 @@ public class MainActivity extends Activity implements LocationListener {
            public void onClick(View v) {
                locationNextArret = objetTransfert.getNomArret();
                locationDestArret = objetTransfert2.getNomArret();
+
                Intent intent = new Intent(MainActivity.this, InformationActivity.class);
                Bundle bundle = new Bundle();
+
                bundle.putString("ARRET",locationNextArret);
-               bundle.putString("ARRETDEST",locationNextArret);
+               bundle.putString("ARRETDEST",locationDestArret);
+               bundle.putInt("NUMLINE", numeroLigne);
                intent.putExtras(bundle);
                MainActivity.this.startActivity(intent);
            }
