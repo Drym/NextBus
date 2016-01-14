@@ -61,6 +61,8 @@ public class MainActivity extends Activity implements LocationListener {
 
     private boolean setZoomOnlyOnce = false;
 
+    private String locationNextArret;
+
     /*******************************************************/
     /**
      * FONCTIONS.
@@ -72,16 +74,24 @@ public class MainActivity extends Activity implements LocationListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-        final Button loginButton = (Button) findViewById(R.id.buttonInfo);
-        loginButton.setOnClickListener(new View.OnClickListener() {
+        final Button infoButton = (Button) findViewById(R.id.buttonInfo);
+        infoButton.setOnClickListener(new View.OnClickListener() {
 
            @Override
            public void onClick(View v) {
+               locationNextArret = objetTransfert.getNomArret();
                Intent intent = new Intent(MainActivity.this, InformationActivity.class);
-               startActivity(intent);
+               Bundle bundle = new Bundle();
+//Add the parameters to bundle as
+               bundle.putString("ARRET",locationNextArret);
+//Add this bundle to the intent
+               intent.putExtras(bundle);
+//Start next activity
+               MainActivity.this.startActivity(intent);
+               //Log.d("MainActivity", locationNextArret);
            }
         });
+
 
 
         //Création de la carte et des marker sur la carte
