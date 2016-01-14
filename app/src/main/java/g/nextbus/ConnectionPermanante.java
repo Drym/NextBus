@@ -2,6 +2,13 @@ package g.nextbus;
 
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import org.json.JSONObject;
+
+import java.util.Iterator;
+
 /**
  * Created by Lucas on 14/01/2016.
  */
@@ -40,7 +47,26 @@ public class ConnectionPermanante  implements Runnable {
              //   Thread.sleep(1000);
             //}
 
-            mTcpClient.keepAlive();
+            try {
+                //Affiche un message du numéro de bus à prendre
+                JSONObject ListBus = new JSONObject(objetTransfert.getMessage());
+                ListBus = (JSONObject) ListBus.get("BUS");
+
+                RecupererCoord recup = new RecupererCoord();
+                LatLng coord;
+
+                for (Iterator<String> it = ListBus.keys(); it.hasNext(); ) {
+                    coord = recup.getCoord(ListBus.get(it.next()).toString());
+
+                    objetTransfert.getgMap().addMarker(new MarkerOptions().title("Bus").position(coord));
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            //mTcpClient.keepAlive();
+            mTcpClient.stopClient();
         }
         catch (Exception e) {
             Log.e("Connection", "Impossible de se connecter au serveur");

@@ -1,5 +1,6 @@
 package g.nextbus;
 
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 
 /**
@@ -16,6 +17,7 @@ public class ObjetTransfert {
     private String nomArret;
     private String adresseIP;
     private int port;
+    private GoogleMap gMap;
 
     /*
     Constructeurs
@@ -76,5 +78,13 @@ public class ObjetTransfert {
 
     public void setRequete(String requete) {
         this.requete = requete;
+    }
+
+    public GoogleMap getgMap() {
+        return gMap;
+    }
+
+    public void setgMap(GoogleMap gMap) {
+        this.gMap = gMap;
     }
 }

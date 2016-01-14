@@ -331,32 +331,9 @@ public class MainActivity extends Activity implements LocationListener {
         objetTransfert5 =  new ObjetTransfert(objetTransfert.getAdresseIP(), objetTransfert.getPort());
 
         objetTransfert5.setRequete("{\"Requete\":\"LISTBUS\"}");
+        objetTransfert5.setgMap(gMap);
         Thread t = new Thread(new Connection(objetTransfert5));
         t.start();
-
-        //On attend un peu pour que le thread soit fini
-        mHandler.postDelayed(new Runnable() {
-            public void run() {
-
-                try {
-                    //Affiche un message du numéro de bus à prendre
-                    JSONObject ListBus = new JSONObject(objetTransfert5.getMessage());
-                    ListBus = (JSONObject) ListBus.get("BUS");
-
-                    RecupererCoord recup = new RecupererCoord();
-                    LatLng coord;
-
-                    for (Iterator<String> it = ListBus.keys(); it.hasNext(); ) {
-                        coord = recup.getCoord(ListBus.get(it.next()).toString());
-
-                        gMap.addMarker(new MarkerOptions().title("Bus").position(coord));
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }, 4000);
 
     }
 }
