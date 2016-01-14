@@ -82,13 +82,9 @@ public class MainActivity extends Activity implements LocationListener {
                locationNextArret = objetTransfert.getNomArret();
                Intent intent = new Intent(MainActivity.this, InformationActivity.class);
                Bundle bundle = new Bundle();
-//Add the parameters to bundle as
                bundle.putString("ARRET",locationNextArret);
-//Add this bundle to the intent
                intent.putExtras(bundle);
-//Start next activity
                MainActivity.this.startActivity(intent);
-               //Log.d("MainActivity", locationNextArret);
            }
         });
 

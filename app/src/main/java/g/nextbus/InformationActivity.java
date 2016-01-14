@@ -27,14 +27,6 @@ public class InformationActivity extends Activity {
 
           TextView t1 = (TextView) findViewById(R.id.textView2);
           t1.setText(arretProcheRecup);
-
-          //Log.d("InformationActivity", name);
-          //Intent intent = getIntent();
-          //TextView arretDisplay = (TextView) findViewById(R.id.textView2);
-          //String easyPuzzle = intent.getExtras().getString(locationNextArret);
-          //Log.d("InformationActivity", easyPuzzle);
-          //arretDisplay.setText(intent.getStringExtra(locationNextArret));
-
       }
 
 }
