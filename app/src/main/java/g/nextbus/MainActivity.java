@@ -33,6 +33,7 @@ import fr.rolandl.blog_gps.R;
  *
  * @author Lucas
  */
+
 public class MainActivity extends Activity implements LocationListener {
     /*******************************************************/
     /**
@@ -75,6 +76,9 @@ public class MainActivity extends Activity implements LocationListener {
         marker = gMap.addMarker(new MarkerOptions().title("Vous êtes ici").position(new LatLng(0, 0)));
         markerArret = gMap.addMarker(new MarkerOptions().title("Arret le plus proche").position(new LatLng(0, 0)));
         markerArret2 = gMap.addMarker(new MarkerOptions().title("Maison").position(new LatLng(0, 0)));
+
+        //markerArret2 = gMap.addMarker(new MarkerOptions().title("Maison").icon(BitmapDescriptorFactory.fromResource(R.drawable.maison)).position(new LatLng(0, 0)));
+
         markerArret3 = gMap.addMarker(new MarkerOptions().title("Arret d'arrivé").position(new LatLng(0, 0)));
         mHandler = new Handler();
 
@@ -110,6 +114,10 @@ public class MainActivity extends Activity implements LocationListener {
                             //On le marque sur la carte
                             markerArret.setTitle("Arret le plus proche: " + objetTransfert.getNomArret());
                             markerArret.setPosition(coordArret);
+
+
+                            //markerArret = gMap.addMarker(new MarkerOptions().position(coordArret).title("Arret le plus proche: " + objetTransfert.getNomArret().icon(BitmapDescriptorFactory.fromResource(R.drawable.test)));
+
                             /*
                             File file = new File("test.png");
                             Bitmap bit = BitmapFactory.decodeFile(String.valueOf(file));
