@@ -3,10 +3,10 @@ package g.nextbus;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
@@ -35,6 +35,8 @@ public class ConnectionPermanante  implements Runnable {
     public void run() {
 
         try {
+
+
             connecte = true;
             //On se connecte au serveur
             mTcpClient = new TCPClient(objetTransfert.getAdresseIP(), objetTransfert.getPort());
@@ -43,23 +45,41 @@ public class ConnectionPermanante  implements Runnable {
             mTcpClient.sendMessage(objetTransfert.getRequete());
 
            // while(connecte) {
-                objetTransfert.setMessage(mTcpClient.Reponse());
+            objetTransfert.setMessage(mTcpClient.Reponse());
              //   Thread.sleep(1000);
             //}
 
+
             try {
                 //Affiche un message du numéro de bus à prendre
+
                 JSONObject ListBus = new JSONObject(objetTransfert.getMessage());
-                ListBus = (JSONObject) ListBus.get("BUS");
+                //JSONObject ListBus;
+
+                //JSONObject ListBusdur = new JSONObject("{\"1\":{\"BUS\":{\"Bus\":\"1\",\"Vitesse\":25,\"IP\":\"10.212.115.127\",\"Port\":1234,\"Latitude\":43.617619,\"Noeud\":\"25\",\"Longitude\":7.070758}},\"2\":{\"BUS\":{\"Bus\":\"2\",\"Vitesse\":50,\"IP\":\"10.212.115.127\",\"Port\":1235,\"Latitude\":43.616486,\"Noeud\":\"44\",\"Longitude\":7.068313}},\"3\":{\"BUS\":{\"Bus\":\"3\",\"Vitesse\":75,\"IP\":\"10.212.115.127\",\"Port\":1236,\"Latitude\":43.616257,\"Noeud\":\"58\",\"Longitude\":7.066246}}}");
+
+                //ListBus = ListBusdur;
 
                 RecupererCoord recup = new RecupererCoord();
                 LatLng coord;
 
-                for (Iterator<String> it = ListBus.keys(); it.hasNext(); ) {
-                    coord = recup.getCoord(ListBus.get(it.next()).toString());
+                ArrayList<LatLng> listBus = new ArrayList<>();
 
-                    objetTransfert.getgMap().addMarker(new MarkerOptions().title("Bus").position(coord));
+                int i = 0;
+                JSONObject test = new JSONObject();
+
+                for (Iterator iterator = ListBus.keys(); iterator.hasNext();) {
+                    String numNoeud = (String) iterator.next();
+                    test = (JSONObject) ListBus.get(numNoeud);
+                    test = (JSONObject) test.get("BUS");
+
+                    coord = recup.getCoord(test.toString());
+                    listBus.add(i, coord);
+
+                    i++;
                 }
+
+                objetTransfert.setListBus(listBus);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -69,7 +89,7 @@ public class ConnectionPermanante  implements Runnable {
             mTcpClient.stopClient();
         }
         catch (Exception e) {
-            Log.e("Connection", "Impossible de se connecter au serveur");
+            Log.e("ConnectionPerma", "Impossible de se connecter au serveur");
         }
     }
 

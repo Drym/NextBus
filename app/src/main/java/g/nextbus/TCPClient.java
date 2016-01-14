@@ -40,6 +40,7 @@ public class TCPClient {
      * @param message
      */
     public void sendMessage(String message){
+        Log.d("TCPClient", message);
         out.println(message);
         out.flush();
     }

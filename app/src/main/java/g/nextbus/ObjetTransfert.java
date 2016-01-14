@@ -1,7 +1,8 @@
 package g.nextbus;
 
-import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+
+import java.util.ArrayList;
 
 /**
  * Created by Lucas on 11/01/2016.
@@ -17,7 +18,7 @@ public class ObjetTransfert {
     private String nomArret;
     private String adresseIP;
     private int port;
-    private GoogleMap gMap;
+    private ArrayList<LatLng> listBus;
 
     /*
     Constructeurs
@@ -80,11 +81,11 @@ public class ObjetTransfert {
         this.requete = requete;
     }
 
-    public GoogleMap getgMap() {
-        return gMap;
+    public ArrayList<LatLng> getListBus() {
+        return listBus;
     }
 
-    public void setgMap(GoogleMap gMap) {
-        this.gMap = gMap;
+    public void setListBus(ArrayList<LatLng> listBus) {
+        this.listBus = listBus;
     }
 }

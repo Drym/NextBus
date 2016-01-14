@@ -358,11 +358,25 @@ public class MainActivity extends Activity implements LocationListener {
     public void positionEnTempsReel() {
 
         objetTransfert5 =  new ObjetTransfert(objetTransfert.getAdresseIP(), objetTransfert.getPort());
+        //objetTransfert5 =  new ObjetTransfert("", 0);
 
         objetTransfert5.setRequete("{\"Requete\":\"LISTBUS\"}");
-        objetTransfert5.setgMap(gMap);
-        Thread t = new Thread(new Connection(objetTransfert5));
+
+        Thread t = new Thread(new ConnectionPermanante(objetTransfert5));
         t.start();
+
+        //Permet de trouver le bus le plus proche de l'adresse saisie
+        mHandler.postDelayed(new Runnable() {
+            public void run() {
+
+                String test = String.valueOf(objetTransfert5.getListBus().size());
+
+                int i;
+                for(i = 0; i < objetTransfert5.getListBus().size(); i++) {
+                    gMap.addMarker(new MarkerOptions().title("Bus "+i).position(objetTransfert5.getListBus().get(i)));
+                }
+            }
+        }, 4000);
 
     }
 }

@@ -18,7 +18,6 @@ public class RecupererCoord {
 
         try {
             JSONObject reponseJSON = new JSONObject(chaine);
-
             latLng = new LatLng(reponseJSON.getDouble("Latitude"), reponseJSON.getDouble("Longitude"));
 
         } catch(JSONException e){
