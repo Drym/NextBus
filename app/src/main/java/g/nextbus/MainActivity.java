@@ -186,7 +186,7 @@ public class MainActivity extends Activity implements LocationListener {
                             markerArret3.setPosition(coordArret);
 
                             //Affiche les noms de arrets à prendre
-                            Toast.makeText(getApplicationContext(), "Prendre le bus de " + objetTransfert.getNomArret() + " à " + objetTransfert2.getNomArret(), Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(getApplicationContext(), "Prendre le bus de " + objetTransfert.getNomArret() + " à " + objetTransfert2.getNomArret(), Toast.LENGTH_SHORT).show();
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -244,7 +244,7 @@ public class MainActivity extends Activity implements LocationListener {
                                             //Affiche un message du numéro de bus à prendre
                                             JSONObject numBus = new JSONObject(objetTransfert4.getMessage());
                                             numBus = (JSONObject) numBus.get("BUS");
-                                            Toast.makeText(getApplicationContext(), "Prendre le bus numéro " + numBus.getString("Bus"), Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getApplicationContext(), "Done "/* + numBus.getString("Bus")*/, Toast.LENGTH_SHORT).show();
 
                                             positionEnTempsReel();
 
