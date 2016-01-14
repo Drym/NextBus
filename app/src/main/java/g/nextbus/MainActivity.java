@@ -1,8 +1,7 @@
 package g.nextbus;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -12,33 +11,34 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONObject;
 
-import java.io.File;
-import java.util.concurrent.ExecutionException;
+import java.util.Iterator;
 
 import fr.rolandl.blog_gps.R;
 
 /**
  * MainActivity.
- * @author Lucas
  *
+ * @author Lucas
  */
 public class MainActivity extends Activity implements LocationListener {
     /*******************************************************/
-    /** VARIABLES.
-     /*******************************************************/
+    /**
+     * VARIABLES.
+     * /
+     *******************************************************/
     private static String IP_SERVEUR = "10.212.115.218";
     private static int PORT_SERVEUR = 4444;
 
@@ -55,12 +55,15 @@ public class MainActivity extends Activity implements LocationListener {
     private ObjetTransfert objetTransfert2;
     private ObjetTransfert objetTransfert3;
     private ObjetTransfert objetTransfert4;
+    private ObjetTransfert objetTransfert5;
 
     private boolean setZoomOnlyOnce = false;
 
     /*******************************************************/
-    /** FONCTIONS.
-     /*******************************************************/
+    /**
+     * FONCTIONS.
+     * /
+     *******************************************************/
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -92,7 +95,7 @@ public class MainActivity extends Activity implements LocationListener {
                     Thread t = new Thread(new Connection(objetTransfert));
                     t.start();
 
-                }catch (Exception e) {
+                } catch (Exception e) {
                     Log.e("MainActivity", "Echec de connection au serveur");
                 }
 
@@ -101,11 +104,11 @@ public class MainActivity extends Activity implements LocationListener {
                     public void run() {
                         try {
                             //On récupère l'arret le plus proche
-                            ArretProche  arretProche = new ArretProche(objetTransfert);
+                            ArretProche arretProche = new ArretProche(objetTransfert);
                             LatLng coordArret = arretProche.arretLePlusProche(objetTransfert.getMessage(), 0, 0);
 
                             //On le marque sur la carte
-                            markerArret.setTitle("Arret le plus proche: "+objetTransfert.getNomArret());
+                            markerArret.setTitle("Arret le plus proche: " + objetTransfert.getNomArret());
                             markerArret.setPosition(coordArret);
                             /*
                             File file = new File("test.png");
@@ -152,7 +155,7 @@ public class MainActivity extends Activity implements LocationListener {
 
                             //Ajout du marker de la destination et de l'arret le plus proche de celle-ci
                             markerArret2.setPosition(objetTransfert2.getLatLng());
-                            markerArret3.setTitle("Arret d'arrivé: "+ objetTransfert2.getNomArret());
+                            markerArret3.setTitle("Arret d'arrivé: " + objetTransfert2.getNomArret());
                             markerArret3.setPosition(coordArret);
 
                             //Affiche les noms de arrets à prendre
@@ -177,6 +180,9 @@ public class MainActivity extends Activity implements LocationListener {
                             objetTransfert3 = new ObjetTransfert(objetTransfert.getAdresseIP(), objetTransfert.getPort());
                             objetTransfert3.setRequete("{\"Requete\":\"BUS\",\"ArretArrive\":\"" + objetTransfert2.getNomArret() + "\"}");
 
+                            //objetTransfert3.setKeepAlive("{\"Requete\":\"LISTBUS\"}");
+                            //ICI
+
                             //Lancement de la connection en mettant en paramètre objetTransfort qui contient la requete
                             Thread t = new Thread(new Connection(objetTransfert3));
                             t.start();
@@ -193,6 +199,8 @@ public class MainActivity extends Activity implements LocationListener {
 
                                     //Objet mit en paramètre pour récupérer les infos depuis le serveur
                                     objetTransfert4 = new ObjetTransfert(objetTransfert3.getAdresseIP(), objetTransfert3.getPort());
+
+                                    positionEnTempsReel();
 
                                     //Lancement de la connection en mettant en paramètre objetTransfort qui contient la requete
                                     objetTransfert4.setRequete("{\"Requete\":\"BUS\"}");
@@ -211,93 +219,134 @@ public class MainActivity extends Activity implements LocationListener {
                                             //Affiche un message du numéro de bus à prendre
                                             JSONObject numBus = new JSONObject(objetTransfert4.getMessage());
                                             numBus = (JSONObject) numBus.get("BUS");
-                                            Toast.makeText(getApplicationContext(), "Prendre le bus numéro "+ numBus.getString("Bus") ,Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getApplicationContext(), "Prendre le bus numéro " + numBus.getString("Bus"), Toast.LENGTH_SHORT).show();
                                         } catch (Exception e) {
                                             e.printStackTrace();
                                         }
                                     }
                                 }, 4000);
                             }
-                         }, 4000);
+                        }, 4000);
                     }
                 }, 4000);
             }
         });
     }
 
-            @Override
-            public void onResume() {
-                super.onResume();
+    @Override
+    public void onResume() {
+        super.onResume();
 
-                //Obtention de la référence du service
-                locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
+        //Obtention de la référence du service
+        locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
 
-                //Si le GPS est disponible, on s'y abonne
-                if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                    abonnementGPS();
-                }
-            }
-
-
-            @Override
-            public void onPause() {
-                super.onPause();
-
-                //On appelle la méthode pour se désabonner
-                desabonnementGPS();
-            }
-
-            /**
-             * Méthode permettant de s'abonner à la localisation par GPS.
-             */
-            public void abonnementGPS() {
-                //On s'abonne
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, this);
-            }
-
-            /**
-             * Méthode permettant de se désabonner de la localisation par GPS.
-             */
-            public void desabonnementGPS() {
-                //Si le GPS est disponible, on s'y abonne
-                locationManager.removeUpdates(this);
-            }
-
-
-            @Override
-            public void onLocationChanged(final Location location) {
-
-                //Mise à jour des coordonnées
-                final LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                if (setZoomOnlyOnce == false) {
-                    gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-                    setZoomOnlyOnce = true;
-                }
-                marker.setPosition(latLng);
-
-            }
-
-
-            @Override
-            public void onProviderDisabled(final String provider) {
-                //Si le GPS est désactivé on se désabonne
-                if ("gps".equals(provider)) {
-                    desabonnementGPS();
-                }
-            }
-
-
-            @Override
-            public void onProviderEnabled(final String provider) {
-                //Si le GPS est activé on s'abonne
-                if ("gps".equals(provider)) {
-                    abonnementGPS();
-                }
-            }
-
-
-            @Override
-            public void onStatusChanged(final String provider, final int status, final Bundle extras) {
-            }
-
+        //Si le GPS est disponible, on s'y abonne
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            abonnementGPS();
         }
+    }
+
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        //On appelle la méthode pour se désabonner
+        desabonnementGPS();
+    }
+
+    /**
+     * Méthode permettant de s'abonner à la localisation par GPS.
+     */
+    public void abonnementGPS() {
+        //On s'abonne
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, this);
+    }
+
+    /**
+     * Méthode permettant de se désabonner de la localisation par GPS.
+     */
+    public void desabonnementGPS() {
+        //Si le GPS est disponible, on s'y abonne
+        locationManager.removeUpdates(this);
+    }
+
+
+    @Override
+    public void onLocationChanged(final Location location) {
+
+        //Mise à jour des coordonnées
+        final LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        if (setZoomOnlyOnce == false) {
+            gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+            setZoomOnlyOnce = true;
+        }
+        marker.setPosition(latLng);
+
+        /*
+        Toast.makeText(getApplicationContext(), (int)location.getAccuracy(), Toast.LENGTH_SHORT).show();
+
+        Circle circle = gMap.addCircle(new CircleOptions()
+                .center(latLng)
+                .radius(location.getAccuracy())
+                .strokeColor(Color.RED)
+                .fillColor(Color.argb((int)0.4, 135, 225, 255)));
+        */
+    }
+
+
+    @Override
+    public void onProviderDisabled(final String provider) {
+        //Si le GPS est désactivé on se désabonne
+        if ("gps".equals(provider)) {
+            desabonnementGPS();
+        }
+    }
+
+
+    @Override
+    public void onProviderEnabled(final String provider) {
+        //Si le GPS est activé on s'abonne
+        if ("gps".equals(provider)) {
+            abonnementGPS();
+        }
+    }
+
+
+    @Override
+    public void onStatusChanged(final String provider, final int status, final Bundle extras) {
+    }
+
+
+    public void positionEnTempsReel() {
+
+        objetTransfert5.setRequete("{\"Requete\":\"LISTBUS\"}");
+        Thread t = new Thread(new Connection(objetTransfert5));
+        t.start();
+
+        //On attend un peu pour que le thread soit fini
+        mHandler.postDelayed(new Runnable() {
+            public void run() {
+
+                try {
+                    //Affiche un message du numéro de bus à prendre
+                    JSONObject ListBus = new JSONObject(objetTransfert5.getMessage());
+                    ListBus = (JSONObject) ListBus.get("BUS");
+
+                    RecupererCoord recup = new RecupererCoord();
+                    LatLng coord;
+
+                    for (Iterator<String> it = ListBus.keys(); it.hasNext(); ) {
+                        coord = recup.getCoord(ListBus.get(it.next()).toString());
+
+                        gMap.addMarker(new MarkerOptions().title("Bus").position(coord));
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, 4000);
+
+    }
+}
