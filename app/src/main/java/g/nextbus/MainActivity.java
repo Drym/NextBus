@@ -208,8 +208,6 @@ public class MainActivity extends Activity implements LocationListener {
                                     //Objet mit en paramètre pour récupérer les infos depuis le serveur
                                     objetTransfert4 = new ObjetTransfert(objetTransfert3.getAdresseIP(), objetTransfert3.getPort());
 
-                                    positionEnTempsReel();
-
                                     //Lancement de la connection en mettant en paramètre objetTransfort qui contient la requete
                                     objetTransfert4.setRequete("{\"Requete\":\"BUS\"}");
                                     Thread t = new Thread(new Connection(objetTransfert4));
@@ -228,6 +226,9 @@ public class MainActivity extends Activity implements LocationListener {
                                             JSONObject numBus = new JSONObject(objetTransfert4.getMessage());
                                             numBus = (JSONObject) numBus.get("BUS");
                                             Toast.makeText(getApplicationContext(), "Prendre le bus numéro " + numBus.getString("Bus"), Toast.LENGTH_SHORT).show();
+
+                                            positionEnTempsReel();
+
                                         } catch (Exception e) {
                                             e.printStackTrace();
                                         }
