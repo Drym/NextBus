@@ -33,6 +33,7 @@ public class Connection implements Runnable {
             mTcpClient.run();
             //Demande la liste des arrets
             mTcpClient.sendMessage(objetTransfert.getRequete());
+            Log.d("Connection", objetTransfert.getRequete());
             objetTransfert.setMessage(mTcpClient.Reponse());
 
             mTcpClient.stopClient();

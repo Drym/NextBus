@@ -328,6 +328,8 @@ public class MainActivity extends Activity implements LocationListener {
 
     public void positionEnTempsReel() {
 
+        objetTransfert5 =  new ObjetTransfert(objetTransfert.getAdresseIP(), objetTransfert.getPort());
+
         objetTransfert5.setRequete("{\"Requete\":\"LISTBUS\"}");
         Thread t = new Thread(new Connection(objetTransfert5));
         t.start();
