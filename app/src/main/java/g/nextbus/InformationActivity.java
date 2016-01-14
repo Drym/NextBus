@@ -38,8 +38,8 @@ public class InformationActivity extends Activity {
           TextView t3 = (TextView) findViewById(R.id.textView9);
           t3.setText(arretDestiRecup);
 
-          //TextView t4 = (TextView) findViewById(R.id.textView4);
-          //t4.setText(arretDestiRecup);
+          TextView t4 = (TextView) findViewById(R.id.textView5);
+          t4.setText("Ligne 1");
 
 
       }
