@@ -66,7 +66,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Numero de ligne"
-        android:id="@+id/textView4" />
+        android:id="@+id/textView111111" />
 
     <TextView
         android:layout_width="wrap_content"
