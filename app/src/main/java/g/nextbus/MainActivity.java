@@ -1,6 +1,7 @@
 package g.nextbus;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
@@ -70,6 +71,18 @@ public class MainActivity extends Activity implements LocationListener {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        final Button loginButton = (Button) findViewById(R.id.buttonInfo);
+        loginButton.setOnClickListener(new View.OnClickListener() {
+
+           @Override
+           public void onClick(View v) {
+               Intent intent = new Intent(MainActivity.this, InformationActivity.class);
+               startActivity(intent);
+           }
+        });
+
 
         //Création de la carte et des marker sur la carte
         gMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
@@ -258,9 +271,9 @@ public class MainActivity extends Activity implements LocationListener {
 
     @Override
     public void onPause() {
-        super.onPause();
+            super.onPause();
 
-        //On appelle la méthode pour se désabonner
+            //On appelle la méthode pour se désabonner
         desabonnementGPS();
     }
 
