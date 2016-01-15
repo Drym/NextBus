@@ -1,6 +1,7 @@
 package g.nextbus;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 
 import java.util.ArrayList;
 
@@ -19,6 +20,8 @@ public class ObjetTransfert {
     private String adresseIP;
     private int port;
     private ArrayList<LatLng> listBus;
+    private ArrayList<Marker> listMarker;
+    private int nbBus;
 
     /*
     Constructeurs
@@ -87,5 +90,21 @@ public class ObjetTransfert {
 
     public void setListBus(ArrayList<LatLng> listBus) {
         this.listBus = listBus;
+    }
+
+    public ArrayList<Marker> getListMarker() {
+        return listMarker;
+    }
+
+    public void setListMarker(ArrayList<Marker> listMarker) {
+        this.listMarker = listMarker;
+    }
+
+    public int getNbBus() {
+        return nbBus;
+    }
+
+    public void setNbBus(int nbBus) {
+        this.nbBus = nbBus;
     }
 }

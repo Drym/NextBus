@@ -73,13 +73,6 @@ public class TCPClient {
         catch (Exception e) {}
     }
 
-    public void keepAlive() {
-        try {
-            socket.getKeepAlive();
-        }
-        catch (Exception e) {}
-    }
-
     /**
      * Lancement de la connection
      */

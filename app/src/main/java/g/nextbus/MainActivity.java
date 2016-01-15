@@ -26,6 +26,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import fr.rolandl.blog_gps.R;
@@ -59,12 +60,14 @@ public class MainActivity extends Activity implements LocationListener {
     private ObjetTransfert objetTransfert3;
     private ObjetTransfert objetTransfert4;
     private ObjetTransfert objetTransfert5;
+    private ObjetTransfert objetTransfert6;
 
     private boolean setZoomOnlyOnce = false;
 
     private String locationNextArret;
     private String locationDestArret;
     private int numeroLigne;
+    private int nbBus;
 
 
 
@@ -103,10 +106,11 @@ public class MainActivity extends Activity implements LocationListener {
         //Création de la carte et des marker sur la carte
         gMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
         marker = gMap.addMarker(new MarkerOptions().title("Vous êtes ici").position(new LatLng(0, 0)));
-        /*markerArret = gMap.addMarker(new MarkerOptions().title("Arret le plus proche").position(new LatLng(0, 0)));
+        markerArret = gMap.addMarker(new MarkerOptions().title("Arret le plus proche").position(new LatLng(0, 0)));
         markerArret2 = gMap.addMarker(new MarkerOptions().title("Maison").position(new LatLng(0, 0)));
-        markerArret3 = gMap.addMarker(new MarkerOptions().title("Arret d'arrivé").position(new LatLng(0, 0)));*/
+        markerArret3 = gMap.addMarker(new MarkerOptions().title("Arret d'arrivé").position(new LatLng(0, 0)));
 
+        /*
         markerArret = gMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Arret le plus proche")
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.arretprocheico)));
 
@@ -115,9 +119,7 @@ public class MainActivity extends Activity implements LocationListener {
 
         markerArret3 = gMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Arret d'arrivé")
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.arretdestico)));
-
-
-
+        */
 
 
         mHandler = new Handler();
@@ -155,6 +157,8 @@ public class MainActivity extends Activity implements LocationListener {
                             markerArret.setTitle("Arret le plus proche: " + objetTransfert.getNomArret());
                             markerArret.setPosition(coordArret);
 
+                            //Récupère le nombre de bus
+                            nbBus();
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -162,6 +166,7 @@ public class MainActivity extends Activity implements LocationListener {
                     }
 
                 }, 4000);
+
 
                 //Permet de trouver les coordonnées de la destination saisie dans la barre de recherche
                 try {
@@ -217,8 +222,6 @@ public class MainActivity extends Activity implements LocationListener {
                             objetTransfert3 = new ObjetTransfert(objetTransfert.getAdresseIP(), objetTransfert.getPort());
                             objetTransfert3.setRequete("{\"Requete\":\"BUS\",\"ArretArrive\":\"" + objetTransfert2.getNomArret() + "\"}");
 
-                            //objetTransfert3.setKeepAlive("{\"Requete\":\"LISTBUS\"}");
-                            //ICI
 
                             //Lancement de la connection en mettant en paramètre objetTransfort qui contient la requete
                             Thread t = new Thread(new Connection(objetTransfert3));
@@ -359,25 +362,51 @@ public class MainActivity extends Activity implements LocationListener {
     public void positionEnTempsReel() {
 
         objetTransfert5 =  new ObjetTransfert(objetTransfert.getAdresseIP(), objetTransfert.getPort());
-        //objetTransfert5 =  new ObjetTransfert("", 0);
 
+        ArrayList<Marker> listMarker = new ArrayList<>();
+
+        for( int i = 0; i < nbBus; i++) {
+            Marker markerBus = gMap.addMarker(new MarkerOptions().title("Bus "+(i+1)).position(new LatLng(0, 0)));
+            listMarker.add(i, markerBus);
+        }
+
+
+        objetTransfert5.setListMarker(listMarker);
+        objetTransfert5.setNbBus(nbBus);
         objetTransfert5.setRequete("{\"Requete\":\"LISTBUS\"}");
 
         Thread t = new Thread(new ConnectionPermanante(objetTransfert5));
         t.start();
 
-        //Permet de trouver le bus le plus proche de l'adresse saisie
+    }
+
+    public void nbBus() {
+        //Connection au serveur pour récupérer le nombre de bus
+        try {
+
+            //Objet mit en paramètre pour récupérer les informations depuis le serveur
+            objetTransfert6 = new ObjetTransfert(IP_SERVEUR, PORT_SERVEUR);
+
+            //Lancement de la connection en mettant en paramètre objetTransfort qui contient la requete
+            objetTransfert6.setRequete("{\"Requete\":\"NBBUS\"}");
+            Thread t = new Thread(new Connection(objetTransfert6));
+            t.start();
+
+        } catch (Exception e) {
+            Log.e("MainActivity", "Echec de connection au serveur");
+        }
+
         mHandler.postDelayed(new Runnable() {
             public void run() {
+                try {
+                    JSONObject nbBusJson = new JSONObject(objetTransfert6.getMessage());
+                    nbBus =  nbBusJson.getInt("NOMBREBUS");
 
-                String test = String.valueOf(objetTransfert5.getListBus().size());
-
-                int i;
-                for(i = 0; i < objetTransfert5.getListBus().size(); i++) {
-                    gMap.addMarker(new MarkerOptions().title("Bus "+i).position(objetTransfert5.getListBus().get(i)));
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
-        }, 4000);
 
+        }, 4000);
     }
 }

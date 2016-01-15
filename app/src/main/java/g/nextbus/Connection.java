@@ -35,6 +35,8 @@ public class Connection implements Runnable {
             mTcpClient.sendMessage(objetTransfert.getRequete());
             objetTransfert.setMessage(mTcpClient.Reponse());
 
+            mTcpClient.sendMessage("{\"Requete\":\"DECONNECTION\"}");
+
             mTcpClient.stopClient();
         }
         catch (Exception e) {
