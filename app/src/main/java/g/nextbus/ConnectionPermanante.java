@@ -1,15 +1,21 @@
 package g.nextbus;
 
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONObject;
 
 import java.util.Iterator;
+
+import fr.rolandl.blog_gps.R;
 
 
 /**
@@ -22,6 +28,7 @@ public class ConnectionPermanante  implements Runnable {
      */
     private ObjetTransfert objetTransfert;
     private TCPClient mTcpClient;
+    Bundle bundle = new Bundle();
 
     /*
     Constructeur
@@ -59,13 +66,19 @@ public class ConnectionPermanante  implements Runnable {
 
                     for (Iterator iterator = ListBus.keys(); iterator.hasNext(); ) {
                         String numNoeud = (String) iterator.next();
+
                         test = (JSONObject) ListBus.get(numNoeud);
                         test = (JSONObject) test.get("BUS");
 
                         coord = recup.getCoord(test.toString());
 
                         String numBus = test.getString("Bus");
-                        addMarker(i, coord, objetTransfert.getListMarker().get(i), numBus);
+                        String placeRestante = test.getString("PlacesRestantes");
+                        Log.d("ConnectionPerma", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + placeRestante);
+
+                        bundle.putString("PLACE", placeRestante);
+
+                        addMarker(i, coord, objetTransfert.getListMarker().get(i), numBus, numBusAPrendre);
 
                         i++;
                     }
@@ -83,16 +96,27 @@ public class ConnectionPermanante  implements Runnable {
         }
     }
 
-    public void addMarker(final int i, final LatLng coor, final Marker marker, final String numBus) {
+    public void addMarker(final int i, final LatLng coor, final Marker marker, final String numBus, final String BusAPrendre) {
 
         Handler handler = new Handler(Looper.getMainLooper());
         handler.post(new Runnable() {
             public void run() {
+                //Log.d("ConnectionPerma", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"+BusAPrendre);
+                //Log.d("ConnectionPerma", "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"+numBus);
+                if (BusAPrendre.equals(numBus)){
+                    //Log.d("ConnectionPerma", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"+BusAPrendre);
+                    marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.buspersoico));
+                    //marker.setTitle("Bus "+numBus+" : Mon Bus");
+                }
                 marker.setTitle("Bus "+numBus);
                 marker.setPosition(coor);
+
+
+
             }
         });
 
     }
+
 
 }
