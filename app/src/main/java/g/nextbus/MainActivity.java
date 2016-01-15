@@ -71,7 +71,6 @@ public class MainActivity extends Activity implements LocationListener {
     private String numeroBusInfo;
     private int numeroLigne;
     private int nbBus;
-    private String numBusAPrendre;
 
 
 
@@ -231,8 +230,8 @@ public class MainActivity extends Activity implements LocationListener {
         }
         marker.setPosition(latLng);
 
-        /*
         Toast.makeText(getApplicationContext(), (int)location.getAccuracy(), Toast.LENGTH_SHORT).show();
+        /*
 
         circle.setRadius(location.getAccuracy());
         circle.setCenter(latLng);
@@ -432,53 +431,23 @@ public class MainActivity extends Activity implements LocationListener {
     }
 
     /**
-     * Connection au bus donné par l'arret lors de l'éxécution de infoArret()
-     * Lance printInfoBus()
-     * @author Lucas
-     */
-    public void infoBus() {
-
-        mHandler.postDelayed(new Runnable() {
-            public void run() {
-                //Connection au bus pour récupérer les information du bus
-                try {
-                    Toast.makeText(getApplicationContext(), "Connection au bus...", Toast.LENGTH_SHORT).show();
-
-                    //Objet mit en paramètre pour récupérer les infos depuis le serveur
-                    objetTransfert4 = new ObjetTransfert(objetTransfert3.getAdresseIP(), objetTransfert3.getPort());
-
-                    //Lancement de la connection en mettant en paramètre objetTransfort qui contient la requete
-                    objetTransfert4.setRequete("{\"Requete\":\"BUS\"}");
-                    Thread t = new Thread(new Connection(objetTransfert4));
-                    t.start();
-
-                } catch (Exception e) {
-                    Log.e("MainActivity", "Echec de connection au bus");
-                }
-
-                printInfoBus();
-            }
-        }, 4000);
-    }
-
-    /**
      * Permet d'afficher qu'un bus à bien été trouvé à partir des connections précedente
      * Lance positionEnTempsReel()
      * @author Lucas
      */
-    public void printInfoBus() {
+    public void infoBus() {
         //On attend un peu pour que le thread soit fini
         mHandler.postDelayed(new Runnable() {
             public void run() {
 
                 try {
                     //Affiche un message du numéro de bus à prendre
-                    JSONObject numBus = new JSONObject(objetTransfert4.getMessage());
+                    JSONObject numBus = new JSONObject(objetTransfert3.getMessage());
                     numBus = (JSONObject) numBus.get("BUS");
 
-                    numBusAPrendre = numBus.getString("Bus");
-                    Toast.makeText(getApplicationContext(), "Bus trouvé " + numBusAPrendre, Toast.LENGTH_SHORT).show();
                     numeroBusInfo = numBus.getString("Bus");
+                    Toast.makeText(getApplicationContext(), "Bus trouvé " + numeroBusInfo, Toast.LENGTH_SHORT).show();
+
                     positionEnTempsReel();
 
                 } catch (Exception e) {
@@ -508,7 +477,7 @@ public class MainActivity extends Activity implements LocationListener {
 
         objetTransfert5.setListMarker(listMarker);
         objetTransfert5.setNbBus(nbBus);
-        objetTransfert5.setMessage(numBusAPrendre);
+        objetTransfert5.setMessage(numeroBusInfo);
         objetTransfert5.setReset(true);
 
         objetTransfert5.setRequete("{\"Requete\":\"LISTBUS\"}");
