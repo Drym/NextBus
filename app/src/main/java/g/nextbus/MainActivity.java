@@ -39,7 +39,7 @@ public class MainActivity extends Activity implements LocationListener {
      * VARIABLES.
      * /
      *******************************************************/
-    private static String IP_SERVEUR = "10.212.115.218";
+    private static String IP_SERVEUR = "10.212.115.127";
     private static int PORT_SERVEUR = 4444;
 
     private LocationManager locationManager;
@@ -59,6 +59,7 @@ public class MainActivity extends Activity implements LocationListener {
     private ObjetTransfert objetTransfert6;
 
     private boolean setZoomOnlyOnce = false;
+    private boolean canLaunch=false;
 
     private String locationNextArret;
     private String locationDestArret;
@@ -83,17 +84,22 @@ public class MainActivity extends Activity implements LocationListener {
 
            @Override
            public void onClick(View v) {
-               locationNextArret = objetTransfert.getNomArret();
-               locationDestArret = objetTransfert2.getNomArret();
+               if (canLaunch) {
+                   locationNextArret = objetTransfert.getNomArret();
+                   locationDestArret = objetTransfert2.getNomArret();
 
-               Intent intent = new Intent(MainActivity.this, InformationActivity.class);
-               Bundle bundle = new Bundle();
+                   Intent intent = new Intent(MainActivity.this, InformationActivity.class);
+                   Bundle bundle = new Bundle();
 
-               bundle.putString("ARRET",locationNextArret);
-               bundle.putString("ARRETDEST",locationDestArret);
-               bundle.putInt("NUMLINE", numeroLigne);
-               intent.putExtras(bundle);
-               MainActivity.this.startActivity(intent);
+                   bundle.putString("ARRET", locationNextArret);
+                   bundle.putString("ARRETDEST", locationDestArret);
+                   bundle.putInt("NUMLINE", numeroLigne);
+                   intent.putExtras(bundle);
+                   MainActivity.this.startActivity(intent);
+               }
+               else{
+                   Toast.makeText(getApplicationContext(), "Entrez une adresse et validez avant ...", Toast.LENGTH_SHORT).show();
+               }
            }
         });
 
@@ -124,7 +130,7 @@ public class MainActivity extends Activity implements LocationListener {
         Button bouton2 = (Button) findViewById(R.id.bouton2);
         bouton2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
+                canLaunch = true;
                 listArret();
                 geometer();
                 infoArret();
@@ -293,7 +299,7 @@ public class MainActivity extends Activity implements LocationListener {
                 try {
                     //Récupération de la réponse et mise dans nbBus
                     JSONObject nbBusJson = new JSONObject(objetTransfert6.getMessage());
-                    nbBus =  nbBusJson.getInt("NOMBREBUS");
+                    nbBus = nbBusJson.getInt("NOMBREBUS");
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -429,8 +435,8 @@ public class MainActivity extends Activity implements LocationListener {
                     //Affiche un message du numéro de bus à prendre
                     JSONObject numBus = new JSONObject(objetTransfert4.getMessage());
                     numBus = (JSONObject) numBus.get("BUS");
-                    Toast.makeText(getApplicationContext(), "Bus trouvé"/* + numBus.getString("Bus")*/, Toast.LENGTH_SHORT).show();
-
+                    Toast.makeText(getApplicationContext(), "Bus trouvé" + numBus.getString("Bus"), Toast.LENGTH_SHORT).show();
+                    //Log.d("ConnectionPerma", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + numBus.getString("Bus"));
                     positionEnTempsReel();
 
                 } catch (Exception e) {
