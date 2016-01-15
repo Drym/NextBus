@@ -49,7 +49,7 @@ public class ConnectionPermanante  implements Runnable {
                     mTcpClient.sendMessage(objetTransfert.getRequete());
                     JSONObject ListBus = new JSONObject(mTcpClient.Reponse());
 
-                    RecupererCoord recup = new RecupererCoord();
+                    Calcul recup = new Calcul();
 
                     LatLng coord;
                     int i = 0;

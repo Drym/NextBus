@@ -12,9 +12,9 @@ import static java.lang.Math.sqrt;
 
 /**
  * Created by Lucas on 08/01/2016.
- * Permet de récupérer les coordonnées de l'arrete le plus proche
+ * Permet de récupérer les coordonnées de l'arrete le plus proche et le des coordonnées à partir d'un Json
  */
-public class ArretProche {
+public class Calcul {
 
     /*
     Variables
@@ -24,7 +24,10 @@ public class ArretProche {
     /*
     Constructeurs
      */
-    public ArretProche(ObjetTransfert objetTransfert){
+    public Calcul(){}
+
+
+    public Calcul(ObjetTransfert objetTransfert){
         this.objetTransfert = objetTransfert;
     }
 
@@ -97,6 +100,22 @@ public class ArretProche {
         objetTransfert.setAdresseIP(bestIP);
         objetTransfert.setPort(bestPort);
         objetTransfert.setNomArret(bestNom);
+
+        return latLng;
+    }
+
+
+    public LatLng getCoord (String chaine) {
+
+        LatLng latLng = null;
+
+        try {
+            JSONObject reponseJSON = new JSONObject(chaine);
+            latLng = new LatLng(reponseJSON.getDouble("Latitude"), reponseJSON.getDouble("Longitude"));
+
+        } catch(JSONException e){
+            e.printStackTrace();
+        }
 
         return latLng;
     }
