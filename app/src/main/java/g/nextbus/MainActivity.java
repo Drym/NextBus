@@ -63,9 +63,12 @@ public class MainActivity extends Activity implements LocationListener {
     private ObjetTransfert objetTransfert6;
 
     private boolean setZoomOnlyOnce = false;
+    private boolean canLaunch=false;
+    Bundle bundle = new Bundle();
 
     private String locationNextArret;
     private String locationDestArret;
+    private String numeroBusInfo;
     private int numeroLigne;
     private int nbBus;
 
@@ -82,10 +85,35 @@ public class MainActivity extends Activity implements LocationListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        final Button infoButton = (Button) findViewById(R.id.buttonInfo);
+        infoButton.setOnClickListener(new View.OnClickListener() {
+
+           @Override
+           public void onClick(View v) {
+               if (canLaunch) {
+                   locationNextArret = objetTransfert.getNomArret();
+                   locationDestArret = objetTransfert2.getNomArret();
+
+                   Intent intent = new Intent(MainActivity.this, InformationActivity.class);
+
+
+                   bundle.putString("ARRET", locationNextArret);
+                   bundle.putString("ARRETDEST", locationDestArret);
+                   bundle.putInt("NUMLINE", numeroLigne);
+                   bundle.putString("NUMBUS", numeroBusInfo);
+                   intent.putExtras(bundle);
+                   MainActivity.this.startActivity(intent);
+               }
+               else{
+                   Toast.makeText(getApplicationContext(), "Entrez une adresse et validez avant ...", Toast.LENGTH_SHORT).show();
+               }
+           }
+        });
+
+
         //Création de la carte et des marker sur la carte
         gMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
         marker = gMap.addMarker(new MarkerOptions().title("Vous êtes ici").position(new LatLng(0, 0)));
-
         /*
         circle = gMap.addCircle(new CircleOptions()
                 .center(new LatLng(0, 0))
@@ -109,25 +137,6 @@ public class MainActivity extends Activity implements LocationListener {
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.arretdestico)));
 
 
-        final Button infoButton = (Button) findViewById(R.id.buttonInfo);
-        infoButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                locationNextArret = objetTransfert.getNomArret();
-                locationDestArret = objetTransfert2.getNomArret();
-
-                Intent intent = new Intent(MainActivity.this, InformationActivity.class);
-                Bundle bundle = new Bundle();
-
-                bundle.putString("ARRET",locationNextArret);
-                bundle.putString("ARRETDEST",locationDestArret);
-                bundle.putInt("NUMLINE", numeroLigne);
-                intent.putExtras(bundle);
-                MainActivity.this.startActivity(intent);
-            }
-        });
-
 
         mHandler = new Handler();
 
@@ -138,7 +147,7 @@ public class MainActivity extends Activity implements LocationListener {
         Button bouton2 = (Button) findViewById(R.id.bouton2);
         bouton2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
+                canLaunch = true;
                 listArret();
                 geometer();
                 infoArret();
@@ -196,6 +205,7 @@ public class MainActivity extends Activity implements LocationListener {
             setZoomOnlyOnce = true;
         }
         marker.setPosition(latLng);
+
         /*
         Toast.makeText(getApplicationContext(), (int)location.getAccuracy(), Toast.LENGTH_SHORT).show();
 
@@ -304,7 +314,7 @@ public class MainActivity extends Activity implements LocationListener {
                 try {
                     //Récupération de la réponse et mise dans nbBus
                     JSONObject nbBusJson = new JSONObject(objetTransfert6.getMessage());
-                    nbBus =  nbBusJson.getInt("NOMBREBUS");
+                    nbBus = nbBusJson.getInt("NOMBREBUS");
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -440,8 +450,8 @@ public class MainActivity extends Activity implements LocationListener {
                     //Affiche un message du numéro de bus à prendre
                     JSONObject numBus = new JSONObject(objetTransfert4.getMessage());
                     numBus = (JSONObject) numBus.get("BUS");
-                    Toast.makeText(getApplicationContext(), "Bus trouvé"/* + numBus.getString("Bus")*/, Toast.LENGTH_SHORT).show();
-
+                    Toast.makeText(getApplicationContext(), "Bus trouvé" + numBus.getString("Bus"), Toast.LENGTH_SHORT).show();
+                    numeroBusInfo = numBus.getString("Bus");
                     positionEnTempsReel();
 
                 } catch (Exception e) {
