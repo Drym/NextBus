@@ -55,6 +55,7 @@ public class ConnectionPermanante  implements Runnable {
                     int i = 0;
 
                     JSONObject test = new JSONObject();
+                    String numBusAPrendre = objetTransfert.getMessage();
 
                     for (Iterator iterator = ListBus.keys(); iterator.hasNext(); ) {
                         String numNoeud = (String) iterator.next();

@@ -71,6 +71,7 @@ public class MainActivity extends Activity implements LocationListener {
     private String numeroBusInfo;
     private int numeroLigne;
     private int nbBus;
+    private String numBusAPrendre;
 
 
 
@@ -450,7 +451,9 @@ public class MainActivity extends Activity implements LocationListener {
                     //Affiche un message du numéro de bus à prendre
                     JSONObject numBus = new JSONObject(objetTransfert4.getMessage());
                     numBus = (JSONObject) numBus.get("BUS");
-                    Toast.makeText(getApplicationContext(), "Bus trouvé" + numBus.getString("Bus"), Toast.LENGTH_SHORT).show();
+
+                    numBusAPrendre = numBus.getString("Bus");
+                    Toast.makeText(getApplicationContext(), "Bus trouvé " + numBusAPrendre, Toast.LENGTH_SHORT).show();
                     numeroBusInfo = numBus.getString("Bus");
                     positionEnTempsReel();
 
@@ -481,6 +484,7 @@ public class MainActivity extends Activity implements LocationListener {
 
         objetTransfert5.setListMarker(listMarker);
         objetTransfert5.setNbBus(nbBus);
+        objetTransfert5.setMessage(numBusAPrendre);
         objetTransfert5.setRequete("{\"Requete\":\"LISTBUS\"}");
 
         Thread t = new Thread(new ConnectionPermanante(objetTransfert5));
