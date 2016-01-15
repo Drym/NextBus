@@ -42,7 +42,7 @@ public class ConnectionPermanante  implements Runnable {
             mTcpClient = new TCPClient(objetTransfert.getAdresseIP(), objetTransfert.getPort());
             mTcpClient.run();
 
-            while(true) {
+            while(objetTransfert.isReset()) {
                 try {
 
                     //Demande la liste des arrets

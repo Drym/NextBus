@@ -21,6 +21,7 @@ public class ObjetTransfert {
     private int port;
     private ArrayList<Marker> listMarker;
     private int nbBus;
+    private boolean reset;
 
     /*
     Constructeurs
@@ -97,5 +98,13 @@ public class ObjetTransfert {
 
     public void setNbBus(int nbBus) {
         this.nbBus = nbBus;
+    }
+
+    public boolean isReset() {
+        return reset;
+    }
+
+    public void setReset(boolean reset) {
+        this.reset = reset;
     }
 }

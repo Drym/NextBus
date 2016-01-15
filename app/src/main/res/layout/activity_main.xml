@@ -43,9 +43,9 @@
         android:layout_height="wrap_content"
         android:text="Valider"
         android:id="@+id/bouton2"
-        android:layout_above="@+id/map"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:layout_above="@+id/map" />
 
     <Button
         android:layout_width="wrap_content"
@@ -53,10 +53,19 @@
         android:text="Information"
         android:id="@+id/buttonInfo"
         android:layout_below="@+id/editText"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_toLeftOf="@+id/bouton"
+        android:layout_toStartOf="@+id/bouton" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Reset"
+        android:id="@+id/bouton"
+        android:layout_below="@+id/editText"
+        android:layout_alignRight="@+id/bouton2"
+        android:layout_alignEnd="@+id/bouton2" />
     <!--
         <Button
             android:layout_width="wrap_content"

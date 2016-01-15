@@ -155,6 +155,30 @@ public class MainActivity extends Activity implements LocationListener {
 
             }
         });
+
+        Button bouton = (Button) findViewById(R.id.bouton);
+        bouton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                try {
+                    objetTransfert5.setReset(false);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                gMap.clear();
+
+                marker = gMap.addMarker(new MarkerOptions().title("Vous êtes ici").position(new LatLng(0, 0)));
+
+                markerArret = gMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Arret le plus proche")
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.arretprocheico)));
+
+                markerArret2 = gMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Maison")
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.maisonico)));
+
+                markerArret3 = gMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Arret d'arrivé")
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.arretdestico)));
+
+            }
+        });
     }
 
     @Override
@@ -485,6 +509,8 @@ public class MainActivity extends Activity implements LocationListener {
         objetTransfert5.setListMarker(listMarker);
         objetTransfert5.setNbBus(nbBus);
         objetTransfert5.setMessage(numBusAPrendre);
+        objetTransfert5.setReset(true);
+
         objetTransfert5.setRequete("{\"Requete\":\"LISTBUS\"}");
 
         Thread t = new Thread(new ConnectionPermanante(objetTransfert5));
