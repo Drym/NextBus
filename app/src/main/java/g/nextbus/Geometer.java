@@ -35,10 +35,17 @@ public class Geometer implements Runnable  {
 
     public URL getJSONByGoogle() throws IOException {
 
-        fullAddress = objetTransfert.getMessage();
-        URL url = new URL(URL + "?address=" + URLEncoder.encode(fullAddress, "UTF-8") + "&sensor=false");
+        try {
+            fullAddress = objetTransfert.getMessage();
+            URL url = new URL(URL + "?address=" + URLEncoder.encode(fullAddress, "UTF-8") + "&sensor=false");
 
-        return url;
+            return url;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        URL url2 = new URL("");
+        return url2;
     }
 
      public void run() {

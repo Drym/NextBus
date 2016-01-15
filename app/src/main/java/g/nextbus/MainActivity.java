@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -100,11 +101,12 @@ public class MainActivity extends Activity implements LocationListener {
         //Création de la carte et des marker sur la carte
         gMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
         marker = gMap.addMarker(new MarkerOptions().title("Vous êtes ici").position(new LatLng(0, 0)));
+        /*
         markerArret = gMap.addMarker(new MarkerOptions().title("Arret le plus proche").position(new LatLng(0, 0)));
         markerArret2 = gMap.addMarker(new MarkerOptions().title("Maison").position(new LatLng(0, 0)));
         markerArret3 = gMap.addMarker(new MarkerOptions().title("Arret d'arrivé").position(new LatLng(0, 0)));
+        */
 
-        /*
         markerArret = gMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Arret le plus proche")
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.arretprocheico)));
 
@@ -113,7 +115,7 @@ public class MainActivity extends Activity implements LocationListener {
 
         markerArret3 = gMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Arret d'arrivé")
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.arretdestico)));
-        */
+
 
 
         mHandler = new Handler();
@@ -449,7 +451,10 @@ public class MainActivity extends Activity implements LocationListener {
         ArrayList<Marker> listMarker = new ArrayList<>();
 
         for( int i = 0; i < nbBus; i++) {
-            Marker markerBus = gMap.addMarker(new MarkerOptions().title("Bus "+(i+1)).position(new LatLng(0, 0)));
+            //Marker markerBus = gMap.addMarker(new MarkerOptions().title("Bus "+(i+1)).position(new LatLng(0, 0)));
+            Marker markerBus = gMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Bus "+(i+1))
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.busgeneralico)));
+
             listMarker.add(i, markerBus);
         }
 
