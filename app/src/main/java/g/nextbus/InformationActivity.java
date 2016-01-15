@@ -27,6 +27,7 @@ public class InformationActivity extends Activity {
           //recuperation des bundles
           String arretProcheRecup = bundle.getString("ARRET");
           String arretDestiRecup = bundle.getString("ARRETDEST");
+          String numeroBus = bundle.getString("NUMBUS");
           int numeroLigne = bundle.getInt("NUMLINE");
 
           TextView t1 = (TextView) findViewById(R.id.textView2);
@@ -40,6 +41,9 @@ public class InformationActivity extends Activity {
 
           TextView t4 = (TextView) findViewById(R.id.textView5);
           t4.setText("Ligne 1");
+
+          TextView t5 = (TextView) findViewById(R.id.textView4);
+          t5.setText(numeroBus);
 
 
       }

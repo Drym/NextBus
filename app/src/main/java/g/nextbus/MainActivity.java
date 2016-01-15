@@ -60,9 +60,11 @@ public class MainActivity extends Activity implements LocationListener {
 
     private boolean setZoomOnlyOnce = false;
     private boolean canLaunch=false;
+    Bundle bundle = new Bundle();
 
     private String locationNextArret;
     private String locationDestArret;
+    private String numeroBusInfo;
     private int numeroLigne;
     private int nbBus;
 
@@ -89,11 +91,12 @@ public class MainActivity extends Activity implements LocationListener {
                    locationDestArret = objetTransfert2.getNomArret();
 
                    Intent intent = new Intent(MainActivity.this, InformationActivity.class);
-                   Bundle bundle = new Bundle();
+
 
                    bundle.putString("ARRET", locationNextArret);
                    bundle.putString("ARRETDEST", locationDestArret);
                    bundle.putInt("NUMLINE", numeroLigne);
+                   bundle.putString("NUMBUS", numeroBusInfo);
                    intent.putExtras(bundle);
                    MainActivity.this.startActivity(intent);
                }
@@ -436,7 +439,7 @@ public class MainActivity extends Activity implements LocationListener {
                     JSONObject numBus = new JSONObject(objetTransfert4.getMessage());
                     numBus = (JSONObject) numBus.get("BUS");
                     Toast.makeText(getApplicationContext(), "Bus trouvé" + numBus.getString("Bus"), Toast.LENGTH_SHORT).show();
-                    //Log.d("ConnectionPerma", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + numBus.getString("Bus"));
+                    numeroBusInfo = numBus.getString("Bus");
                     positionEnTempsReel();
 
                 } catch (Exception e) {
