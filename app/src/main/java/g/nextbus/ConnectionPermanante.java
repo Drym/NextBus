@@ -63,7 +63,9 @@ public class ConnectionPermanante  implements Runnable {
 
                         coord = recup.getCoord(test.toString());
 
-                        addMarker(i, coord, objetTransfert.getListMarker().get(i));
+                        String numBus = test.getString("Bus");
+                        addMarker(i, coord, objetTransfert.getListMarker().get(i), numBus);
+
                         i++;
                     }
 
@@ -80,11 +82,12 @@ public class ConnectionPermanante  implements Runnable {
         }
     }
 
-    public void addMarker(final int i, final LatLng coor, final Marker marker) {
+    public void addMarker(final int i, final LatLng coor, final Marker marker, final String numBus) {
 
         Handler handler = new Handler(Looper.getMainLooper());
         handler.post(new Runnable() {
             public void run() {
+                marker.setTitle("Bus "+numBus);
                 marker.setPosition(coor);
             }
         });

@@ -2,6 +2,7 @@ package g.nextbus;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -17,6 +18,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -39,13 +42,14 @@ public class MainActivity extends Activity implements LocationListener {
      * VARIABLES.
      * /
      *******************************************************/
-    private static String IP_SERVEUR = "10.212.115.218";
+    private static String IP_SERVEUR = "10.212.115.127";//"10.212.115.218";
     private static int PORT_SERVEUR = 4444;
 
     private LocationManager locationManager;
     private GoogleMap gMap;
     private Handler mHandler;
 
+    private Circle circle;
     private Marker marker;
     private Marker markerArret;
     private Marker markerArret2;
@@ -78,29 +82,17 @@ public class MainActivity extends Activity implements LocationListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final Button infoButton = (Button) findViewById(R.id.buttonInfo);
-        infoButton.setOnClickListener(new View.OnClickListener() {
-
-           @Override
-           public void onClick(View v) {
-               locationNextArret = objetTransfert.getNomArret();
-               locationDestArret = objetTransfert2.getNomArret();
-
-               Intent intent = new Intent(MainActivity.this, InformationActivity.class);
-               Bundle bundle = new Bundle();
-
-               bundle.putString("ARRET",locationNextArret);
-               bundle.putString("ARRETDEST",locationDestArret);
-               bundle.putInt("NUMLINE", numeroLigne);
-               intent.putExtras(bundle);
-               MainActivity.this.startActivity(intent);
-           }
-        });
-
-
         //Création de la carte et des marker sur la carte
         gMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
         marker = gMap.addMarker(new MarkerOptions().title("Vous êtes ici").position(new LatLng(0, 0)));
+
+        /*
+        circle = gMap.addCircle(new CircleOptions()
+                .center(new LatLng(0, 0))
+                .radius(0)
+                .fillColor(Color.argb(100, 135, 225, 255)));
+        circle.setStrokeWidth(0);
+        */
         /*
         markerArret = gMap.addMarker(new MarkerOptions().title("Arret le plus proche").position(new LatLng(0, 0)));
         markerArret2 = gMap.addMarker(new MarkerOptions().title("Maison").position(new LatLng(0, 0)));
@@ -117,10 +109,32 @@ public class MainActivity extends Activity implements LocationListener {
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.arretdestico)));
 
 
+        final Button infoButton = (Button) findViewById(R.id.buttonInfo);
+        infoButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                locationNextArret = objetTransfert.getNomArret();
+                locationDestArret = objetTransfert2.getNomArret();
+
+                Intent intent = new Intent(MainActivity.this, InformationActivity.class);
+                Bundle bundle = new Bundle();
+
+                bundle.putString("ARRET",locationNextArret);
+                bundle.putString("ARRETDEST",locationDestArret);
+                bundle.putInt("NUMLINE", numeroLigne);
+                intent.putExtras(bundle);
+                MainActivity.this.startActivity(intent);
+            }
+        });
+
 
         mHandler = new Handler();
 
-        //Bouton pour lancer tout le processus de connection
+        /**
+         * Bouton pour lancer tout les processus de connection
+         * @author Lucas
+         */
         Button bouton2 = (Button) findViewById(R.id.bouton2);
         bouton2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -182,16 +196,13 @@ public class MainActivity extends Activity implements LocationListener {
             setZoomOnlyOnce = true;
         }
         marker.setPosition(latLng);
-
         /*
         Toast.makeText(getApplicationContext(), (int)location.getAccuracy(), Toast.LENGTH_SHORT).show();
 
-        Circle circle = gMap.addCircle(new CircleOptions()
-                .center(latLng)
-                .radius(location.getAccuracy())
-                .strokeColor(Color.RED)
-                .fillColor(Color.argb((int)0.4, 135, 225, 255)));
+        circle.setRadius(location.getAccuracy());
+        circle.setCenter(latLng);
         */
+
     }
 
 
@@ -452,7 +463,7 @@ public class MainActivity extends Activity implements LocationListener {
 
         for( int i = 0; i < nbBus; i++) {
             //Marker markerBus = gMap.addMarker(new MarkerOptions().title("Bus "+(i+1)).position(new LatLng(0, 0)));
-            Marker markerBus = gMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Bus "+(i+1))
+            Marker markerBus = gMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Bus")
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.busgeneralico)));
 
             listMarker.add(i, markerBus);

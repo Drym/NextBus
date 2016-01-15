@@ -19,7 +19,6 @@ public class ObjetTransfert {
     private String nomArret;
     private String adresseIP;
     private int port;
-    private ArrayList<LatLng> listBus;
     private ArrayList<Marker> listMarker;
     private int nbBus;
 
@@ -82,14 +81,6 @@ public class ObjetTransfert {
 
     public void setRequete(String requete) {
         this.requete = requete;
-    }
-
-    public ArrayList<LatLng> getListBus() {
-        return listBus;
-    }
-
-    public void setListBus(ArrayList<LatLng> listBus) {
-        this.listBus = listBus;
     }
 
     public ArrayList<Marker> getListMarker() {
