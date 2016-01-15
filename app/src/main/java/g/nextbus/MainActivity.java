@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
@@ -102,12 +103,23 @@ public class MainActivity extends Activity implements LocationListener {
         //Création de la carte et des marker sur la carte
         gMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
         marker = gMap.addMarker(new MarkerOptions().title("Vous êtes ici").position(new LatLng(0, 0)));
-        markerArret = gMap.addMarker(new MarkerOptions().title("Arret le plus proche").position(new LatLng(0, 0)));
+        /*markerArret = gMap.addMarker(new MarkerOptions().title("Arret le plus proche").position(new LatLng(0, 0)));
         markerArret2 = gMap.addMarker(new MarkerOptions().title("Maison").position(new LatLng(0, 0)));
+        markerArret3 = gMap.addMarker(new MarkerOptions().title("Arret d'arrivé").position(new LatLng(0, 0)));*/
 
-        //markerArret2 = gMap.addMarker(new MarkerOptions().title("Maison").icon(BitmapDescriptorFactory.fromResource(R.drawable.maison)).position(new LatLng(0, 0)));
+        markerArret = gMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Arret le plus proche")
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.arretprocheico)));
 
-        markerArret3 = gMap.addMarker(new MarkerOptions().title("Arret d'arrivé").position(new LatLng(0, 0)));
+        markerArret2 = gMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Maison")
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.maisonico)));
+
+        markerArret3 = gMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Arret d'arrivé")
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.arretdestico)));
+
+
+
+
+
         mHandler = new Handler();
 
         //Bouton pour lancer tout le processus de connection
@@ -144,17 +156,6 @@ public class MainActivity extends Activity implements LocationListener {
                             markerArret.setPosition(coordArret);
 
 
-                            //markerArret = gMap.addMarker(new MarkerOptions().position(coordArret).title("Arret le plus proche: " + objetTransfert.getNomArret().icon(BitmapDescriptorFactory.fromResource(R.drawable.test)));
-
-                            /*
-                            File file = new File("test.png");
-                            Bitmap bit = BitmapFactory.decodeFile(String.valueOf(file));
-                            arretProche = new ArretProche(objetTransfert);
-                            coordArret = arretProche.arretLePlusProche(objetTransfert.getMessage(), latitudeUser, longitudeUser);
-                            //On le marque sur la carte
-                            MarkerOptions marker = new MarkerOptions().position(coordArret).icon(BitmapDescriptorFactory.fromBitmap(bit));
-                            gMap.addMarker(marker);
-                            */
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
