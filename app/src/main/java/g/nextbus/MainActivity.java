@@ -492,7 +492,7 @@ public class MainActivity extends Activity implements LocationListener {
 
         objetTransfert5.setRequete("{\"Requete\":\"LISTBUS\"}");
 
-        Thread t = new Thread(new ConnectionPermanante(objetTransfert5));
+        Thread t = new Thread(new ConnectionPermanente(objetTransfert5));
         t.start();
 
     }
