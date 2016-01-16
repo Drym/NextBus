@@ -85,42 +85,16 @@ public class MainActivity extends Activity implements LocationListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final Button infoButton = (Button) findViewById(R.id.buttonInfo);
-        infoButton.setOnClickListener(new View.OnClickListener() {
-
-           @Override
-           public void onClick(View v) {
-               if (canLaunch) {
-                   locationNextArret = objetTransfert.getNomArret();
-                   locationDestArret = objetTransfert2.getNomArret();
-
-                   Intent intent = new Intent(MainActivity.this, InformationActivity.class);
-
-
-                   bundle.putString("ARRET", locationNextArret);
-                   bundle.putString("ARRETDEST", locationDestArret);
-                   bundle.putInt("NUMLINE", numeroLigne);
-                   bundle.putString("NUMBUS", numeroBusInfo);
-                   intent.putExtras(bundle);
-                   MainActivity.this.startActivity(intent);
-               }
-               else{
-                   Toast.makeText(getApplicationContext(), "Entrez une adresse et validez avant ...", Toast.LENGTH_SHORT).show();
-               }
-           }
-        });
-
-
         //Création de la carte et des marker sur la carte
         gMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
         marker = gMap.addMarker(new MarkerOptions().title("Vous êtes ici").position(new LatLng(0, 0)));
-        /*
+
         circle = gMap.addCircle(new CircleOptions()
                 .center(new LatLng(0, 0))
                 .radius(0)
                 .fillColor(Color.argb(100, 135, 225, 255)));
         circle.setStrokeWidth(0);
-        */
+
         /*
         markerArret = gMap.addMarker(new MarkerOptions().title("Arret le plus proche").position(new LatLng(0, 0)));
         markerArret2 = gMap.addMarker(new MarkerOptions().title("Maison").position(new LatLng(0, 0)));
@@ -136,7 +110,31 @@ public class MainActivity extends Activity implements LocationListener {
         markerArret3 = gMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Arret d'arrivé")
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.arretdestico)));
 
+        //Bouton info
+        final Button infoButton = (Button) findViewById(R.id.buttonInfo);
+        infoButton.setOnClickListener(new View.OnClickListener() {
 
+            @Override
+            public void onClick(View v) {
+                if (canLaunch) {
+                    locationNextArret = objetTransfert.getNomArret();
+                    locationDestArret = objetTransfert2.getNomArret();
+
+                    Intent intent = new Intent(MainActivity.this, InformationActivity.class);
+
+
+                    bundle.putString("ARRET", locationNextArret);
+                    bundle.putString("ARRETDEST", locationDestArret);
+                    bundle.putInt("NUMLINE", numeroLigne);
+                    bundle.putString("NUMBUS", numeroBusInfo);
+                    intent.putExtras(bundle);
+                    MainActivity.this.startActivity(intent);
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "Entrez une adresse et validez avant ...", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
         mHandler = new Handler();
 
@@ -155,6 +153,11 @@ public class MainActivity extends Activity implements LocationListener {
             }
         });
 
+
+        /**
+         * Bouton reset pour refresh la map
+         * @author Lucas
+         */
         Button bouton = (Button) findViewById(R.id.bouton);
         bouton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -166,6 +169,12 @@ public class MainActivity extends Activity implements LocationListener {
                 gMap.clear();
 
                 marker = gMap.addMarker(new MarkerOptions().title("Vous êtes ici").position(new LatLng(0, 0)));
+
+                circle = gMap.addCircle(new CircleOptions()
+                        .center(new LatLng(0, 0))
+                        .radius(0)
+                        .fillColor(Color.argb(100, 135, 225, 255)));
+                circle.setStrokeWidth(0);
 
                 markerArret = gMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Arret le plus proche")
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.arretprocheico)));
@@ -230,12 +239,13 @@ public class MainActivity extends Activity implements LocationListener {
         }
         marker.setPosition(latLng);
 
-        Toast.makeText(getApplicationContext(), (int)location.getAccuracy(), Toast.LENGTH_SHORT).show();
-        /*
-
-        circle.setRadius(location.getAccuracy());
-        circle.setCenter(latLng);
-        */
+        //Mise à jour du cercle de précision
+        try {
+            circle.setRadius(location.getAccuracy());
+            circle.setCenter(latLng);
+        } catch (Exception e) {
+            Log.e("MainActivity", "Impossible de récupérer l'accuracy");
+        }
 
     }
 
