@@ -26,7 +26,8 @@ public class ConnectionPermanente implements Runnable {
      */
     private ObjetTransfert objetTransfert;
     private TCPClient mTcpClient;
-    Bundle bundle = new Bundle();
+    private Bundle bundle = new Bundle();
+    private boolean oneTime = false;
 
     /*
     Constructeur
@@ -75,8 +76,6 @@ public class ConnectionPermanente implements Runnable {
 
                         String numBus = test.getString("Bus");
                         String placeRestante = test.getString("PlacesRestantes");
-                        Log.d("ConnectionPermanente", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + placeRestante);
-
                         bundle.putString("PLACE", placeRestante);
 
                         //Affiche le marker sur la carte
@@ -116,8 +115,9 @@ public class ConnectionPermanente implements Runnable {
             public void run() {
 
                 //On met le marker du bus a prendre dans une couleur diffèrente
-                if (BusAPrendre.equals(numBus)){
+                if (BusAPrendre.equals(numBus) && oneTime == false){
                     marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.buspersoico));
+                    oneTime = true;
                 }
                 marker.setTitle("Bus "+numBus);
                 marker.setPosition(coor);
