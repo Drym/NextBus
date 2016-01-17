@@ -38,7 +38,8 @@ public class ConnectionPermanente implements Runnable {
     }
 
     /**
-     * Lance la connection TCP
+     * Lance la connection TCP, celle-ci dure jusqu'au reset ou à la fermeture de l'application
+     * @author Lucas
      */
     public void run() {
 
@@ -56,12 +57,13 @@ public class ConnectionPermanente implements Runnable {
                     mTcpClient.sendMessage(objetTransfert.getRequete());
                     JSONObject ListBus = new JSONObject(mTcpClient.Reponse());
 
+                    //Variables
                     Calcul recup = new Calcul();
-
                     LatLng coord;
                     int i = 0;
-
                     JSONObject test = new JSONObject();
+
+                    //Stock la réponse
                     String numBusAPrendre = objetTransfert.getMessage();
 
                     //calcul de la position de chaque bus
@@ -83,14 +85,15 @@ public class ConnectionPermanente implements Runnable {
 
                         i++;
                     }
-
                     //On attend une seconde avant de refresh
                     Thread.sleep(1000);
+
                 } catch (Exception e) {
                     Log.e("ConnectionPermanente", "Connection trop lente");
                 }
             }
 
+            //Si l'utilisateur appuie sur le bouton reset, la connection s'arrete
             mTcpClient.sendMessage("{\"Requete\":\"DECONNECTION\"}");
             mTcpClient.stopClient();
         }
@@ -114,11 +117,12 @@ public class ConnectionPermanente implements Runnable {
         handler.post(new Runnable() {
             public void run() {
 
-                //On met le marker du bus a prendre dans une couleur diffèrente
+                //On met le marker du bus a prendre dans une couleur diffèrente (une seule fois)
                 if (BusAPrendre.equals(numBus) && oneTime == false){
                     marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.buspersoico));
                     oneTime = true;
                 }
+                //Mise à jour du marker
                 marker.setTitle("Bus "+numBus);
                 marker.setPosition(coor);
 

@@ -24,6 +24,7 @@ public class Connection implements Runnable {
 
     /**
      * Lance la connection TCP
+     * @author Lucas
      */
     public void run() {
 
@@ -31,12 +32,13 @@ public class Connection implements Runnable {
             //On se connecte au serveur
             mTcpClient = new TCPClient(objetTransfert.getAdresseIP(), objetTransfert.getPort());
             mTcpClient.run();
-            //Demande la liste des arrets
+            //Envois de la requete
             mTcpClient.sendMessage(objetTransfert.getRequete());
+            //Rècupère la réponse
             objetTransfert.setMessage(mTcpClient.Reponse());
-
+            //Se déconnecte
             mTcpClient.sendMessage("{\"Requete\":\"DECONNECTION\"}");
-
+            //Ferme la socket et l'outPutStream et inPutStream
             mTcpClient.stopClient();
         }
         catch (Exception e) {

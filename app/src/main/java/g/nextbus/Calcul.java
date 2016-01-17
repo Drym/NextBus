@@ -33,10 +33,11 @@ public class Calcul {
 
     /**
      * Fonction arretLePlusProche, permet de trouver et de récupérer les information de l'arret le plus proche
-     * @param listArret
-     * @param latitude
-     * @param longitude
-     * @return latLng (un latitude et une longitude)
+     * @param listArret, liste des arrets de bus
+     * @param latitude, latitude de l'utilisateur
+     * @param longitude, longitude de l'utilisateur
+     * @return latLng, latitude et longitude de l'arret le plus proche de notre position
+     * @author Lucas
      */
     public LatLng arretLePlusProche(String listArret, double latitude, double longitude){
 
@@ -104,7 +105,12 @@ public class Calcul {
         return latLng;
     }
 
-
+    /**
+     * Récupère les coordonnées dans un Json
+     * @param chaine, le Json en question
+     * @return latLng, les coordonnées
+     * @author Lucas
+     */
     public LatLng getCoord (String chaine) {
 
         LatLng latLng = null;

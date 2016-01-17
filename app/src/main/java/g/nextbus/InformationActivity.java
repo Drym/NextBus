@@ -1,17 +1,13 @@
 package g.nextbus;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import fr.rolandl.blog_gps.R;
 
 /**
- * Created by user on 14/01/16.
+ * Created by jonathan on 14/01/16.
  */
 
 public class InformationActivity extends Activity {

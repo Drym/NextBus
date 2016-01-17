@@ -58,7 +58,6 @@ public class MainActivity extends Activity implements LocationListener {
     private ObjetTransfert objetTransfert;
     private ObjetTransfert objetTransfert2;
     private ObjetTransfert objetTransfert3;
-    private ObjetTransfert objetTransfert4;
     private ObjetTransfert objetTransfert5;
     private ObjetTransfert objetTransfert6;
 
@@ -85,32 +84,28 @@ public class MainActivity extends Activity implements LocationListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Création de la carte et des marker sur la carte
+        //Création de la carte et des markers sur la carte
         gMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
         marker = gMap.addMarker(new MarkerOptions().title("Vous êtes ici").position(new LatLng(0, 0)));
 
+        //Ajout d'un cercle de precision
         circle = gMap.addCircle(new CircleOptions()
                 .center(new LatLng(0, 0))
                 .radius(0)
                 .fillColor(Color.argb(100, 135, 225, 255)));
         circle.setStrokeWidth(0);
 
-        /*
-        markerArret = gMap.addMarker(new MarkerOptions().title("Arret le plus proche").position(new LatLng(0, 0)));
-        markerArret2 = gMap.addMarker(new MarkerOptions().title("Maison").position(new LatLng(0, 0)));
-        markerArret3 = gMap.addMarker(new MarkerOptions().title("Arret d'arrivé").position(new LatLng(0, 0)));
-        */
-
-        markerArret = gMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Arret le plus proche")
+        //Ajout de marker avec une icone personnalisée
+        markerArret = gMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Arret de départ")
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.arretprocheico)));
 
-        markerArret2 = gMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Maison")
+        markerArret2 = gMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Destination")
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.maisonico)));
 
         markerArret3 = gMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Arret d'arrivé")
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.arretdestico)));
 
-        //Bouton info
+        //Bouton information
         final Button infoButton = (Button) findViewById(R.id.buttonInfo);
         infoButton.setOnClickListener(new View.OnClickListener() {
 
@@ -145,9 +140,14 @@ public class MainActivity extends Activity implements LocationListener {
         Button bouton2 = (Button) findViewById(R.id.bouton2);
         bouton2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                //Boolean pour savoir si une recherche a été lancé et si la bouton information peut être utilisé
                 canLaunch = true;
+
+                //Connection au serveur
                 listArret();
+                //Connection au geometer
                 geometer();
+                //Connection à l'arret de bus
                 infoArret();
 
             }
@@ -155,19 +155,22 @@ public class MainActivity extends Activity implements LocationListener {
 
 
         /**
-         * Bouton reset pour refresh la map
+         * Bouton reset pour refresh la google map
          * @author Lucas
          */
         Button bouton = (Button) findViewById(R.id.bouton);
         bouton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 try {
+                    //permet d'arreter la boucle infinie d'actualisation des bus en temps réel dans ConnectionPermanente
                     objetTransfert5.setReset(false);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                //Nétoyage de la google map
                 gMap.clear();
 
+                //Ajout des markers et cercle de base
                 marker = gMap.addMarker(new MarkerOptions().title("Vous êtes ici").position(new LatLng(0, 0)));
 
                 circle = gMap.addCircle(new CircleOptions()
@@ -176,10 +179,10 @@ public class MainActivity extends Activity implements LocationListener {
                         .fillColor(Color.argb(100, 135, 225, 255)));
                 circle.setStrokeWidth(0);
 
-                markerArret = gMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Arret le plus proche")
+                markerArret = gMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Arret de départ")
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.arretprocheico)));
 
-                markerArret2 = gMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Maison")
+                markerArret2 = gMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Destination")
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.maisonico)));
 
                 markerArret3 = gMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Arret d'arrivé")
@@ -207,12 +210,13 @@ public class MainActivity extends Activity implements LocationListener {
     public void onPause() {
             super.onPause();
 
-            //On appelle la méthode pour se désabonner
+        //On appelle la méthode pour se désabonner
         desabonnementGPS();
     }
 
     /**
      * Méthode permettant de s'abonner à la localisation par GPS.
+     * @author Lucas
      */
     public void abonnementGPS() {
         //On s'abonne
@@ -221,6 +225,7 @@ public class MainActivity extends Activity implements LocationListener {
 
     /**
      * Méthode permettant de se désabonner de la localisation par GPS.
+     * @author Lucas
      */
     public void desabonnementGPS() {
         //Si le GPS est disponible, on s'y abonne
@@ -233,13 +238,14 @@ public class MainActivity extends Activity implements LocationListener {
 
         //Mise à jour des coordonnées
         final LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        //On ne zoom que la première fois
         if (setZoomOnlyOnce == false) {
             gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
             setZoomOnlyOnce = true;
         }
-        marker.setPosition(latLng);
 
-        //Mise à jour du cercle de précision
+        //Mise du marker de notre position et du cercle de précision
+        marker.setPosition(latLng);
         try {
             circle.setRadius(location.getAccuracy());
             circle.setCenter(latLng);
@@ -286,6 +292,7 @@ public class MainActivity extends Activity implements LocationListener {
     public void listArret() {
         //Connection au serveur pour récupérer la liste des arrets
         try {
+            //Affiche qu'une connection est en cours
             Toast.makeText(getApplicationContext(), "Connection au serveur...", Toast.LENGTH_SHORT).show();
 
             //Objet mit en paramètre pour récupérer les informations depuis le serveur
@@ -306,10 +313,10 @@ public class MainActivity extends Activity implements LocationListener {
                 try {
                     //On récupère l'arret le plus proche
                     Calcul calcul = new Calcul(objetTransfert);
-                    LatLng coordArret = calcul.arretLePlusProche(objetTransfert.getMessage(), 0, 0);
+                    LatLng coordArret = calcul.arretLePlusProche(objetTransfert.getMessage(), marker.getPosition().latitude, marker.getPosition().longitude);
 
                     //On le marque sur la carte
-                    markerArret.setTitle("Arret le plus proche: " + objetTransfert.getNomArret());
+                    markerArret.setTitle("Arret de départ: " + objetTransfert.getNomArret());
                     markerArret.setPosition(coordArret);
 
                     //Récupère le nombre de bus
@@ -325,7 +332,7 @@ public class MainActivity extends Activity implements LocationListener {
 
     /**
      * Récupère le nombre de bus  en se connectant au serveur dont l'adresse est connue en dure
-     * Permet de créer le nombre de marker qu'il faut en fonction du nombre de bus
+     * Permet de créer le nombre de marker qu'il faut en fonction du nombre de bus dans : positionEnTempsReel()
      * @author Lucas
      */
     public void nbBus() {
@@ -364,6 +371,7 @@ public class MainActivity extends Activity implements LocationListener {
     public void geometer() {
         //Permet de trouver les coordonnées de la destination saisie dans la barre de recherche
         try {
+            //Affiche qu'une connection est en cours
             Toast.makeText(getApplicationContext(), "Connection au Geometer...", Toast.LENGTH_SHORT).show();
 
             //Création de l'objet de transfert et ajout du texte récupéré dans la barre de recherche
@@ -379,7 +387,7 @@ public class MainActivity extends Activity implements LocationListener {
             Log.e("MainActivity", "Echec de connection au Geometer");
         }
 
-        //Permet de trouver le bus le plus proche de l'adresse saisie
+        //Permet de trouver l'arret de bus le plus proche de l'adresse saisie
         mHandler.postDelayed(new Runnable() {
             public void run() {
 
@@ -414,17 +422,17 @@ public class MainActivity extends Activity implements LocationListener {
      */
     public void infoArret() {
 
-        //On attend un peu pour que le thread soit fini
+        //On attend un peu pour que le thread precedent soit fini (en effet, il nous faut l'adresse IP et le port)
         mHandler.postDelayed(new Runnable() {
             public void run() {
-                //Connection à l'arret pour récupérer les infos du bus
+                //Connection à l'arret de bus  pour récupérer les information du bus
                 try {
+                    //Affiche qu'une connection est en cours
                     Toast.makeText(getApplicationContext(), "Connection à l'arret...", Toast.LENGTH_SHORT).show();
 
                     //Objet mit en paramètre pour récupérer les infos depuis le serveur
                     objetTransfert3 = new ObjetTransfert(objetTransfert.getAdresseIP(), objetTransfert.getPort());
                     objetTransfert3.setRequete("{\"Requete\":\"BUS\",\"ArretArrive\":\"" + objetTransfert2.getNomArret() + "\"}");
-
 
                     //Lancement de la connection en mettant en paramètre objetTransfort qui contient la requete
                     Thread t = new Thread(new Connection(objetTransfert3));
@@ -434,6 +442,7 @@ public class MainActivity extends Activity implements LocationListener {
                     Log.e("MainActivity", "Echec de connection à l'arret");
                 }
 
+                //Permet d'afficher qu'un bus à été trouver, et de récupère son numéro
                 infoBus();
             }
         }, 4000);
@@ -441,7 +450,7 @@ public class MainActivity extends Activity implements LocationListener {
     }
 
     /**
-     * Permet d'afficher qu'un bus à bien été trouvé à partir des connections précedente
+     * Permet d'afficher qu'un bus à bien été trouvé à partir des connections précedente et de récupèrer son numéro
      * Lance positionEnTempsReel()
      * @author Lucas
      */
@@ -456,8 +465,9 @@ public class MainActivity extends Activity implements LocationListener {
                     numBus = (JSONObject) numBus.get("BUS");
 
                     numeroBusInfo = numBus.getString("Bus");
-                    Toast.makeText(getApplicationContext(), "Bus trouvé " + numeroBusInfo, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Bus trouvé (n°" + numeroBusInfo+")", Toast.LENGTH_SHORT).show();
 
+                    //Permet d'afficher tout les bus en temps réel sur la carte
                     positionEnTempsReel();
 
                 } catch (Exception e) {
@@ -468,30 +478,33 @@ public class MainActivity extends Activity implements LocationListener {
     }
 
     /**
-     * Permet d'afficher la position des bus en temps réel
+     * Permet d'afficher la position des bus en temps réel sur la carte
      * @author Lucas
      */
     public void positionEnTempsReel() {
 
+        //Ajout des informations de connection à l'arret de bus
         objetTransfert5 =  new ObjetTransfert(objetTransfert.getAdresseIP(), objetTransfert.getPort());
 
+        //Création d'une liste de markers
         ArrayList<Marker> listMarker = new ArrayList<>();
 
+        //Création des markers de bus
         for( int i = 0; i < nbBus; i++) {
-            //Marker markerBus = gMap.addMarker(new MarkerOptions().title("Bus "+(i+1)).position(new LatLng(0, 0)));
             Marker markerBus = gMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Bus")
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.busgeneralico)));
 
             listMarker.add(i, markerBus);
         }
 
+        //Ajout à l'objet des différentes informations utile pour le prochain thread
         objetTransfert5.setListMarker(listMarker);
         objetTransfert5.setNbBus(nbBus);
         objetTransfert5.setMessage(numeroBusInfo);
         objetTransfert5.setReset(true);
-
         objetTransfert5.setRequete("{\"Requete\":\"LISTBUS\"}");
 
+        //Lancement de la connection
         Thread t = new Thread(new ConnectionPermanente(objetTransfert5));
         t.start();
 

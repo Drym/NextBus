@@ -20,8 +20,8 @@ public class TCPClient {
     /*
     Variable
      */
-    private String SERVERIP;
-    private int SERVERPORT;
+    private String IP;
+    private int port;
 
     private PrintWriter out;
     private BufferedReader in;
@@ -30,9 +30,9 @@ public class TCPClient {
     /*
     Constructeur
      */
-    public TCPClient (String SERVERIP, int SERVERPORT) {
-        this.SERVERIP = SERVERIP;
-        this.SERVERPORT = SERVERPORT;
+    public TCPClient (String IP, int port) {
+        this.IP = IP;
+        this.port = port;
     }
 
     /**
@@ -70,7 +70,9 @@ public class TCPClient {
             in.close();
             socket.close();
         }
-        catch (Exception e) {}
+        catch (Exception e) {
+            Log.e("TCPClient", "Erreur de déconnection");
+        }
     }
 
     /**
@@ -80,10 +82,10 @@ public class TCPClient {
 
         try {
             //Adresse IP
-            InetAddress serverAddr = InetAddress.getByName(SERVERIP);
+            InetAddress serverAddr = InetAddress.getByName(IP);
 
             //Création de la socket
-            socket = new Socket(serverAddr, SERVERPORT);
+            socket = new Socket(serverAddr, port);
 
             //Création de outPutStream
             out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
