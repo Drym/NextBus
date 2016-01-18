@@ -26,7 +26,7 @@ public class ConnectionPermanente implements Runnable {
      */
     private ObjetTransfert objetTransfert;
     private TCPClient mTcpClient;
-    private Bundle bundle = new Bundle();
+    private Bundle bundleTempReel = new Bundle();
     private boolean oneTime = false;
 
     /*
@@ -56,15 +56,17 @@ public class ConnectionPermanente implements Runnable {
                     //Demande la liste des bus
                     mTcpClient.sendMessage(objetTransfert.getRequete());
                     JSONObject ListBus = new JSONObject(mTcpClient.Reponse());
-
+                    Log.d("ConnectionPerma", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + ListBus.toString() );
                     //Variables
                     Calcul recup = new Calcul();
                     LatLng coord;
                     int i = 0;
                     JSONObject test = new JSONObject();
-
-                    //Stock la réponse
+                    Log.d("ConnectionPerma", "bbbbbbbbbbbbbbbbbbbbb test dans Connection perma:" );
+                    //Recupere le nombre de bus a prendre
                     String numBusAPrendre = objetTransfert.getMessage();
+
+                    objetTransfert.setMessage(ListBus.toString());
 
                     //calcul de la position de chaque bus
                     for (Iterator iterator = ListBus.keys(); iterator.hasNext(); ) {
@@ -77,8 +79,11 @@ public class ConnectionPermanente implements Runnable {
                         coord = recup.getCoord(test.toString());
 
                         String numBus = test.getString("Bus");
+
+
                         String placeRestante = test.getString("PlacesRestantes");
-                        bundle.putString("PLACE", placeRestante);
+                        //Log.d("ConnectionPerma", "bbbbbbbbbbbbbbbbbbbbb test dans Connection perma    :" + placeRestante);
+                        bundleTempReel.putString("PLACE", placeRestante);
 
                         //Affiche le marker sur la carte
                         addMarker(i, coord, objetTransfert.getListMarker().get(i), numBus, numBusAPrendre);
@@ -100,6 +105,10 @@ public class ConnectionPermanente implements Runnable {
         catch (Exception e) {
             Log.e("ConnectionPermanente", "Impossible de se connecter au serveur");
         }
+    }
+
+    public Bundle getBund() {
+        return bundleTempReel;
     }
 
     /**

@@ -42,7 +42,7 @@ public class MainActivity extends Activity implements LocationListener {
      * VARIABLES.
      * /
      *******************************************************/
-    private static String IP_SERVEUR = "10.212.115.127";//"10.212.115.218";
+    private static String IP_SERVEUR = "10.212.115.218";//"10.212.115.127";
     private static int PORT_SERVEUR = 4444;
 
     private LocationManager locationManager;
@@ -67,6 +67,8 @@ public class MainActivity extends Activity implements LocationListener {
 
     private String locationNextArret;
     private String locationDestArret;
+    private String envoiInfo;
+
     private String numeroBusInfo;
     private int numeroLigne;
     private int nbBus;
@@ -115,10 +117,14 @@ public class MainActivity extends Activity implements LocationListener {
                     locationNextArret = objetTransfert.getNomArret();
                     locationDestArret = objetTransfert2.getNomArret();
 
+                    envoiInfo = objetTransfert5.getMessage();
+                    //Log.d("ConnectionPerma", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + envoiInfo);
+
                     Intent intent = new Intent(MainActivity.this, InformationActivity.class);
 
 
                     bundle.putString("ARRET", locationNextArret);
+                    bundle.putString("TEMPSREEL", envoiInfo);
                     bundle.putString("ARRETDEST", locationDestArret);
                     bundle.putInt("NUMLINE", numeroLigne);
                     bundle.putString("NUMBUS", numeroBusInfo);
@@ -502,7 +508,7 @@ public class MainActivity extends Activity implements LocationListener {
         objetTransfert5.setNbBus(nbBus);
         objetTransfert5.setMessage(numeroBusInfo);
         objetTransfert5.setReset(true);
-        objetTransfert5.setRequete("{\"Requete\":\"LISTBUS\"}");
+        objetTransfert5.setRequete("{\"Requete\":\"LISTBUS\",\"ArretArrive\":\""+objetTransfert2.getNomArret()+"\"}");
 
         //Lancement de la connection
         Thread t = new Thread(new ConnectionPermanente(objetTransfert5));
