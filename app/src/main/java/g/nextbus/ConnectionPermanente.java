@@ -56,13 +56,11 @@ public class ConnectionPermanente implements Runnable {
                     //Demande la liste des bus
                     mTcpClient.sendMessage(objetTransfert.getRequete());
                     JSONObject ListBus = new JSONObject(mTcpClient.Reponse());
-                    Log.d("ConnectionPerma", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + ListBus.toString() );
                     //Variables
                     Calcul recup = new Calcul();
                     LatLng coord;
                     int i = 0;
                     JSONObject test = new JSONObject();
-                    Log.d("ConnectionPerma", "bbbbbbbbbbbbbbbbbbbbb test dans Connection perma:" );
                     //Recupere le nombre de bus a prendre
                     String numBusAPrendre = objetTransfert.getMessage();
 
@@ -80,10 +78,6 @@ public class ConnectionPermanente implements Runnable {
 
                         String numBus = test.getString("Bus");
 
-
-                        String placeRestante = test.getString("PlacesRestantes");
-                        //Log.d("ConnectionPerma", "bbbbbbbbbbbbbbbbbbbbb test dans Connection perma    :" + placeRestante);
-                        bundleTempReel.putString("PLACE", placeRestante);
 
                         //Affiche le marker sur la carte
                         addMarker(i, coord, objetTransfert.getListMarker().get(i), numBus, numBusAPrendre);

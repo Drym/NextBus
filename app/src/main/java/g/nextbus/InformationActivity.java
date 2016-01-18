@@ -1,6 +1,7 @@
 package g.nextbus;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
@@ -21,8 +22,11 @@ public class InformationActivity extends Activity implements Runnable {
     private String distbusarret;
     private String vitesse;
     public boolean isPassed;
+    public boolean boucle = true;
 
-    TextView t6 = (TextView) findViewById(R.id.textView11);
+    private String temps1;
+
+    //TextView t6 = (TextView) findViewById(R.id.textView11);
 
       @Override
       public void onCreate(Bundle savedInstanceState) {
@@ -36,6 +40,20 @@ public class InformationActivity extends Activity implements Runnable {
           String arretProcheRecup = bundle.getString("ARRET");
           String arretDestiRecup = bundle.getString("ARRETDEST");
           numeroBus = bundle.getString("NUMBUS");
+            try {
+                Bundle bundle2 = getIntent().getExtras();
+                String infoTempsReel = bundle2.getString("TEMPSREEL");
+                JSONObject infos = new JSONObject(infoTempsReel);
+                infos = (JSONObject) infos.get(numeroBus);
+                infos = (JSONObject) infos.get("BUS");
+                vitesse = infos.getString("Vitesse");
+                distbusarret = infos.getString("DistanceBusArret");
+                //Log.d("ConnectionPerma", "distance Bus arret " + distbusarret);
+                //Log.d("ConnectionPerma", "vitesse du bus " + vitesse);
+            }
+            catch(Exception e){
+                e.printStackTrace();
+            }
 
 
           String placeRestante = bundle.getString("PLACE");
@@ -63,23 +81,7 @@ public class InformationActivity extends Activity implements Runnable {
 
           }
 
-    public String calculTempsArretPerso(){
-        String vit=vitesse;
-        double vitesseReel = Double.parseDouble(vit);
-        double distanceBusArret = Double.parseDouble(distbusarret);
-        if (distanceBusArret != 0) {
-            double vitesseConvertie = vitesseReel * 16.6667;
-            double tempsAvantArrivee = distanceBusArret / vitesseConvertie;
-            Math.round(tempsAvantArrivee);
-            String returnn = "" + vitesseConvertie;
 
-            return returnn;
-        }
-        else{
-
-            return "0";
-        }
-    }
 
     /*public String calculTempsArretArrive(){
         String vit=vitesse;
@@ -103,23 +105,56 @@ public class InformationActivity extends Activity implements Runnable {
     @Override
     public void run() {
 
-        Bundle bundle = getIntent().getExtras();
+        TextView t6 = (TextView) findViewById(R.id.textView11);
+        TextView t7 = (TextView) findViewById(R.id.textView13);
 
-        String infoTempsReel = bundle.getString("TEMPSREEL");
+        while(boucle) {
 
-            try{
+
+            Bundle bundle = getIntent().getExtras();
+
+            String infoTempsReel = bundle.getString("TEMPSREEL");
+
+
+
+            try {
+
+
+
                 JSONObject infos = new JSONObject(infoTempsReel);
                 infos = (JSONObject) infos.get(numeroBus);
                 infos = (JSONObject) infos.get("BUS");
                 place = infos.getString("PlacesRestantes");
-                Log.d("ConnectionPerma", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + place);
-                //t6.setText(place);
-            }
+                vitesse = infos.getString("Vitesse");
+                distbusarret = infos.getString("DistanceBusArret");
+                double vites = Double.parseDouble(vitesse);
+                double dist = Double.parseDouble(distbusarret);
+                double temp = (dist / vites)*(1/3.6);
+                temp = Math.round(temp);
+                int arround = (int)temp;
+                temps1 = ""+arround;
 
-            catch(Exception e){
+
+                //Log.d("ppepeppepepe", "peloepleolpeloeo" + temp);
+                /*Log.d("ppepeppepepe", "peloepleolpeloeo"+vites);
+                Log.d("ppepeppepepe", "peloepleolpeloeo"+dist);*/
+
+                t6.setText(place);
+                t7.setText(temps1);
+                Thread.sleep(1000);
+
+
+            } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
 
+    }
+
+    @Override
+    public void onBackPressed(){
+        boucle = false;
+        super.onBackPressed();
     }
 
 
