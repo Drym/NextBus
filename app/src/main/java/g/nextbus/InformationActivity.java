@@ -20,7 +20,7 @@ public class InformationActivity extends Activity implements Runnable {
     private String distarretarret;
     private String distbusarret;
     private String vitesse;
-    public boolean flag;
+    public boolean isPassed;
 
     TextView t6 = (TextView) findViewById(R.id.textView11);
 
@@ -63,6 +63,43 @@ public class InformationActivity extends Activity implements Runnable {
 
           }
 
+    public String calculTempsArretPerso(){
+        String vit=vitesse;
+        double vitesseReel = Double.parseDouble(vit);
+        double distanceBusArret = Double.parseDouble(distbusarret);
+        if (distanceBusArret != 0) {
+            double vitesseConvertie = vitesseReel * 16.6667;
+            double tempsAvantArrivee = distanceBusArret / vitesseConvertie;
+            Math.round(tempsAvantArrivee);
+            String returnn = "" + vitesseConvertie;
+
+            return returnn;
+        }
+        else{
+
+            return "0";
+        }
+    }
+
+    /*public String calculTempsArretArrive(){
+        String vit=vitesse;
+        double vitesseReel = Double.parseDouble(vit);
+        double distanceArretAArret = Double.parseDouble(distarretarret);
+        double vitesseConvertie = vitesseReel * 16.6667;
+        double tempsAvantArrivee = distanceArretAArret / vitesseConvertie;
+        Math.round(tempsAvantArrivee);
+        if(!isPassed){
+            double calculTempsArretPerso = Double.parseDouble(calculTempsArretPerso());
+            tempsAvantArrivee = tempsAvantArrivee + calculTempsArretPerso;
+        }
+        else{
+            tempsAvantArrivee = tempsAvantArrivee;
+        }
+        String returnn = ""+vitesseConvertie;
+
+        return returnn;
+    }*/
+
     @Override
     public void run() {
 
@@ -75,9 +112,6 @@ public class InformationActivity extends Activity implements Runnable {
                 infos = (JSONObject) infos.get(numeroBus);
                 infos = (JSONObject) infos.get("BUS");
                 place = infos.getString("PlacesRestantes");
-                distarretarret = infos.getString("DistanceArretAArret");
-                distbusarret = infos.getString("DistanceBusArret");
-                vitesse = infos.getString("Vitesse");
                 Log.d("ConnectionPerma", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + place);
                 //t6.setText(place);
             }
