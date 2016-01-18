@@ -17,9 +17,11 @@ public class InformationActivity extends Activity implements Runnable {
 
     private String numeroBus;
     private String place;
-    private String distarret;
+    private String distarretarret;
+    private String distbusarret;
     private String vitesse;
     public boolean flag;
+
     TextView t6 = (TextView) findViewById(R.id.textView11);
 
       @Override
@@ -37,7 +39,6 @@ public class InformationActivity extends Activity implements Runnable {
 
 
           String placeRestante = bundle.getString("PLACE");
-          Log.d("ConnectionPerma", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + placeRestante);
 
           TextView t1 = (TextView) findViewById(R.id.textView2);
           t1.setText(arretProcheRecup);
@@ -74,8 +75,11 @@ public class InformationActivity extends Activity implements Runnable {
                 infos = (JSONObject) infos.get(numeroBus);
                 infos = (JSONObject) infos.get("BUS");
                 place = infos.getString("PlacesRestantes");
-                distarret = infos.getString("DistanceArretAArret");
+                distarretarret = infos.getString("DistanceArretAArret");
+                distbusarret = infos.getString("DistanceBusArret");
                 vitesse = infos.getString("Vitesse");
+                Log.d("ConnectionPerma", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + place);
+                //t6.setText(place);
             }
 
             catch(Exception e){

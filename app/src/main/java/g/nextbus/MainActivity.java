@@ -471,7 +471,7 @@ public class MainActivity extends Activity implements LocationListener {
                     numBus = (JSONObject) numBus.get("BUS");
 
                     numeroBusInfo = numBus.getString("Bus");
-                    Toast.makeText(getApplicationContext(), "Bus trouvé (n°" + numeroBusInfo+")", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Bus trouvé", Toast.LENGTH_SHORT).show();
 
                     //Permet d'afficher tout les bus en temps réel sur la carte
                     positionEnTempsReel();
