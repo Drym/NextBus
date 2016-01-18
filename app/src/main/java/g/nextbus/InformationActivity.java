@@ -129,7 +129,7 @@ public class InformationActivity extends Activity implements Runnable {
                 distbusarret = infos.getString("DistanceBusArret");
                 double vites = Double.parseDouble(vitesse);
                 double dist = Double.parseDouble(distbusarret);
-                double temp = (dist / vites)*(1/3.6);
+                double temp = (dist / vites)*3.6;
                 temp = Math.round(temp);
                 int arround = (int)temp;
                 temps1 = ""+arround;
