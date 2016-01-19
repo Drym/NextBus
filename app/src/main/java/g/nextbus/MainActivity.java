@@ -141,7 +141,7 @@ public class MainActivity extends Activity implements LocationListener {
         mHandler = new Handler();
 
         /**
-         * Bouton pour lancer tout les processus de connection
+         * Bouton pour lancer tout les processus de connexion
          * @author Lucas
          */
         Button bouton2 = (Button) findViewById(R.id.bouton2);
@@ -150,11 +150,11 @@ public class MainActivity extends Activity implements LocationListener {
                 //Boolean pour savoir si une recherche a été lancé et si la bouton information peut être utilisé
                 canLaunch = true;
 
-                //Connection au serveur
+                //connexion au serveur
                 listArret();
-                //Connection au geometer
+                //connexion au geometer
                 geometer();
-                //Connection à l'arret de bus
+                //connexion à l'arret de bus
                 infoArret();
 
             }
@@ -293,25 +293,25 @@ public class MainActivity extends Activity implements LocationListener {
 
     /**
      * Récupère la liste des arrets en se connectant au serveur dont l'adresse est connue en dure
-     * Et lance la connection à ce même serveur pour récupèrer le nombre de bus : nbBus()
+     * Et lance la connexion à ce même serveur pour récupèrer le nombre de bus : nbBus()
      * @author Lucas
      */
     public void listArret() {
-        //Connection au serveur pour récupérer la liste des arrets
+        //connexion au serveur pour récupérer la liste des arrets
         try {
-            //Affiche qu'une connection est en cours
-            Toast.makeText(getApplicationContext(), "Connection au serveur...", Toast.LENGTH_SHORT).show();
+            //Affiche qu'une connexion est en cours
+            Toast.makeText(getApplicationContext(), "Connexion au serveur...", Toast.LENGTH_SHORT).show();
 
             //Objet mit en paramètre pour récupérer les informations depuis le serveur
             objetTransfert = new ObjetTransfert(IP_SERVEUR, PORT_SERVEUR);
 
-            //Lancement de la connection en mettant en paramètre objetTransfort qui contient la requete
+            //Lancement de la connexion en mettant en paramètre objetTransfort qui contient la requete
             objetTransfert.setRequete("{\"Requete\":\"LISTARRETS\"}");
             Thread t = new Thread(new Connection(objetTransfert));
             t.start();
 
         } catch (Exception e) {
-            Log.e("MainActivity", "Echec de connection au serveur");
+            Log.e("MainActivity", "Echec de connexion au serveur");
         }
 
         //On attend un peu pour que le thread soit fini
@@ -343,18 +343,18 @@ public class MainActivity extends Activity implements LocationListener {
      * @author Lucas
      */
     public void nbBus() {
-        //Connection au serveur pour récupérer le nombre de bus
+        //connexion au serveur pour récupérer le nombre de bus
         try {
             //Objet mit en paramètre pour récupérer les informations depuis le serveur
             objetTransfert6 = new ObjetTransfert(IP_SERVEUR, PORT_SERVEUR);
 
-            //Lancement de la connection en mettant en paramètre objetTransfort qui contient la requete
+            //Lancement de la connexion en mettant en paramètre objetTransfort qui contient la requete
             objetTransfert6.setRequete("{\"Requete\":\"NBBUS\"}");
             Thread t = new Thread(new Connection(objetTransfert6));
             t.start();
 
         } catch (Exception e) {
-            Log.e("MainActivity", "Echec de connection au serveur");
+            Log.e("MainActivity", "Echec de connexion au serveur");
         }
 
         mHandler.postDelayed(new Runnable() {
@@ -372,26 +372,26 @@ public class MainActivity extends Activity implements LocationListener {
     }
 
     /**
-     * Permet d'établir la connection avec un service google qui nous renvoit les coordonnées en fonction d'une recherche effectuée
+     * Permet d'établir la connexion avec un service google qui nous renvoit les coordonnées en fonction d'une recherche effectuée
      * @author Lucas
      */
     public void geometer() {
         //Permet de trouver les coordonnées de la destination saisie dans la barre de recherche
         try {
-            //Affiche qu'une connection est en cours
-            Toast.makeText(getApplicationContext(), "Connection au Geometer...", Toast.LENGTH_SHORT).show();
+            //Affiche qu'une connexion est en cours
+            Toast.makeText(getApplicationContext(), "Connexion au Geometer...", Toast.LENGTH_SHORT).show();
 
             //Création de l'objet de transfert et ajout du texte récupéré dans la barre de recherche
             objetTransfert2 = new ObjetTransfert();
             EditText recherche = (EditText) findViewById(R.id.editText);
             objetTransfert2.setMessage(recherche.getText().toString());
 
-            //Lancement de la connection
+            //Lancement de la connexion
             Thread t2 = new Thread(new Geometer(objetTransfert2));
             t2.start();
 
         } catch (Exception e) {
-            Log.e("MainActivity", "Echec de connection au Geometer");
+            Log.e("MainActivity", "Echec de connexion au Geometer");
         }
 
         //Permet de trouver l'arret de bus le plus proche de l'adresse saisie
@@ -422,7 +422,7 @@ public class MainActivity extends Activity implements LocationListener {
     }
 
     /**
-     * Connection à l'arret le plus proche pour récupère des informations
+     * Connexion à l'arret le plus proche pour récupère des informations
      * L'adresse IP et le port sont donnée par le serveur lors de l'éxecution de listArret();
      * Lance infosBus();
      * @author Lucas
@@ -432,21 +432,21 @@ public class MainActivity extends Activity implements LocationListener {
         //On attend un peu pour que le thread precedent soit fini (en effet, il nous faut l'adresse IP et le port)
         mHandler.postDelayed(new Runnable() {
             public void run() {
-                //Connection à l'arret de bus  pour récupérer les information du bus
+                //connexion à l'arret de bus  pour récupérer les information du bus
                 try {
-                    //Affiche qu'une connection est en cours
-                    Toast.makeText(getApplicationContext(), "Connection à l'arret...", Toast.LENGTH_SHORT).show();
+                    //Affiche qu'une connexion est en cours
+                    Toast.makeText(getApplicationContext(), "Connexion à l'arret...", Toast.LENGTH_SHORT).show();
 
                     //Objet mit en paramètre pour récupérer les infos depuis le serveur
                     objetTransfert3 = new ObjetTransfert(objetTransfert.getAdresseIP(), objetTransfert.getPort());
                     objetTransfert3.setRequete("{\"Requete\":\"BUS\",\"ArretArrive\":\"" + objetTransfert2.getNomArret() + "\"}");
 
-                    //Lancement de la connection en mettant en paramètre objetTransfort qui contient la requete
+                    //Lancement de la connexion en mettant en paramètre objetTransfort qui contient la requete
                     Thread t = new Thread(new Connection(objetTransfert3));
                     t.start();
 
                 } catch (Exception e) {
-                    Log.e("MainActivity", "Echec de connection à l'arret");
+                    Log.e("MainActivity", "Echec de connexion à l'arret");
                 }
 
                 //Permet d'afficher qu'un bus à été trouver, et de récupère son numéro
@@ -457,7 +457,7 @@ public class MainActivity extends Activity implements LocationListener {
     }
 
     /**
-     * Permet d'afficher qu'un bus à bien été trouvé à partir des connections précedente et de récupèrer son numéro
+     * Permet d'afficher qu'un bus à bien été trouvé à partir des connexions précedente et de récupèrer son numéro
      * Lance positionEnTempsReel()
      * @author Lucas
      */
@@ -490,7 +490,7 @@ public class MainActivity extends Activity implements LocationListener {
      */
     public void positionEnTempsReel() {
 
-        //Ajout des informations de connection à l'arret de bus
+        //Ajout des informations de connexion à l'arret de bus
         objetTransfert5 =  new ObjetTransfert(objetTransfert.getAdresseIP(), objetTransfert.getPort());
 
         //Création d'une liste de markers
@@ -511,7 +511,7 @@ public class MainActivity extends Activity implements LocationListener {
         objetTransfert5.setReset(true);
         objetTransfert5.setRequete("{\"Requete\":\"LISTBUS\",\"ArretArrive\":\""+objetTransfert2.getNomArret()+"\"}");
 
-        //Lancement de la connection
+        //Lancement de la connexion
         Thread t = new Thread(new ConnectionPermanente(objetTransfert5));
         t.start();
 
