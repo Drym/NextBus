@@ -147,16 +147,12 @@ public class MainActivity extends Activity implements LocationListener {
         Button bouton2 = (Button) findViewById(R.id.bouton2);
         bouton2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                //Boolean pour savoir si une recherche a été lancé et si la bouton information peut être utilisé
-                canLaunch = true;
-
                 //connexion au serveur
                 listArret();
                 //connexion au geometer
                 geometer();
                 //connexion à l'arret de bus
                 infoArret();
-
             }
         });
 
@@ -476,6 +472,9 @@ public class MainActivity extends Activity implements LocationListener {
 
                     //Permet d'afficher tout les bus en temps réel sur la carte
                     positionEnTempsReel();
+
+                    //Boolean pour savoir si une recherche a été lancé et si la bouton information peut être utilisé
+                    canLaunch = true;
 
                 } catch (Exception e) {
                     e.printStackTrace();
