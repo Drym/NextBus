@@ -42,7 +42,7 @@ public class MainActivity extends Activity implements LocationListener {
      * VARIABLES.
      * /
      *******************************************************/
-    private static String IP_SERVEUR = "10.212.115.218";//"10.212.115.127";
+    private static String IP_SERVEUR = "172.20.10.4";//"10.212.115.127";
     private static int PORT_SERVEUR = 4444;
 
     private LocationManager locationManager;
