@@ -29,10 +29,27 @@ public class InformationActivity extends Activity implements Runnable {
     private String minutesB;
     private String secondesB;
 
+    //initialisation des champs de texte
+    private TextView placerestantes = null;
+
+    private TextView minutesArretproche = null;
+    private TextView secondesArretproche = null;
+
+    private TextView minutesArretDest = null;
+    private TextView secondesArretDest = null;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.information);
+
+        placerestantes = (TextView) findViewById(R.id.textView11);
+
+        minutesArretproche = (TextView) findViewById(R.id.textView13);
+        secondesArretproche = (TextView) findViewById(R.id.textView18);
+
+        minutesArretDest = (TextView) findViewById(R.id.textView16);
+        secondesArretDest = (TextView) findViewById(R.id.textView20);
 
         Bundle bundle = getIntent().getExtras();
 
@@ -87,15 +104,6 @@ public class InformationActivity extends Activity implements Runnable {
     @Override
     public void run() {
 
-        //initialisation des champs de texte
-        TextView placerestantes = (TextView) findViewById(R.id.textView11);
-
-        TextView minutesArretproche = (TextView) findViewById(R.id.textView13);
-        TextView secondesArretproche = (TextView) findViewById(R.id.textView18);
-
-        TextView minutesArretDest = (TextView) findViewById(R.id.textView16);
-        TextView secondesArretDest = (TextView) findViewById(R.id.textView20);
-
         while(boucle) {
 
 
@@ -143,13 +151,15 @@ public class InformationActivity extends Activity implements Runnable {
                 minutesB = ""+arround2/60;
                 secondesB = ""+arround2%60;
 
-                placerestantes.setText(place);
+                if (place!=null || minutesA!=null || secondesA!=null || minutesB!=null || secondesB!=null) {
 
-                minutesArretproche.setText(minutesA);
-                secondesArretproche.setText(secondesA);
-                minutesArretDest.setText(minutesB);
-                secondesArretDest.setText(secondesB);
+                    placerestantes.setText(place);
 
+                    minutesArretproche.setText(minutesA);
+                    secondesArretproche.setText(secondesA);
+                    minutesArretDest.setText(minutesB);
+                    secondesArretDest.setText(secondesB);
+                }
                 Thread.sleep(1000);
 
 
