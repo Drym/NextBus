@@ -4,8 +4,6 @@ package g.nextbus;
  * Created by jonathan on 11/01/16.
  */
 
-import android.util.Log;
-
 import com.google.android.gms.maps.model.LatLng;
 
 import org.apache.commons.io.IOUtils;
@@ -72,15 +70,15 @@ public class Geometer implements Runnable  {
             if(out != null){
                 JSONObject jsonObject = new JSONObject(out);
 
-                /*lng = ((JSONArray) jsonObject.get("results")).getJSONObject(0)
+                lng = ((JSONArray) jsonObject.get("results")).getJSONObject(0)
                         .getJSONObject("geometry").getJSONObject("location")
                         .getDouble("lng");
 
                 lat = ((JSONArray) jsonObject.get("results")).getJSONObject(0)
                         .getJSONObject("geometry").getJSONObject("location")
-                        .getDouble("lat");*/
-                lng = 2.352222;
-                lat = 48.856614;
+                        .getDouble("lat");
+                //lng = 2.352222;
+                //lat = 48.856614;
 
                 latLng = new LatLng(lat, lng);
                 objetTransfert.setLatLng(latLng);

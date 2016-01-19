@@ -61,9 +61,10 @@ public class ConnectionPermanente implements Runnable {
                     LatLng coord;
                     int i = 0;
                     JSONObject test = new JSONObject();
+
                     //Recupere le nombre de bus a prendre
                     String numBusAPrendre = objetTransfert.getMessage();
-
+                    //On met à jour la réponse du serveur
                     objetTransfert.setMessage(ListBus.toString());
 
                     //calcul de la position de chaque bus
