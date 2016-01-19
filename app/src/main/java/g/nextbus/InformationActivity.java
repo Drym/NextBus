@@ -141,7 +141,6 @@ public class InformationActivity extends Activity implements Runnable {
                 minutesB = ""+arround2/60;
                 secondesB = ""+arround2%60;
 
-
                 placerestantes.setText(place);
 
                 minutesArretproche.setText(minutesA);

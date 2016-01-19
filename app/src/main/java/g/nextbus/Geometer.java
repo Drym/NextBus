@@ -83,7 +83,6 @@ public class Geometer implements Runnable  {
                 //lat = 48.856614;
 
                 latLng = new LatLng(lat, lng);
-
                 objetTransfert.setLatLng(latLng);
             }
 
