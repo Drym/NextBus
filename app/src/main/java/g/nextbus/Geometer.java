@@ -72,14 +72,15 @@ public class Geometer implements Runnable  {
             if(out != null){
                 JSONObject jsonObject = new JSONObject(out);
 
-                lng = ((JSONArray) jsonObject.get("results")).getJSONObject(0)
+                /*lng = ((JSONArray) jsonObject.get("results")).getJSONObject(0)
                         .getJSONObject("geometry").getJSONObject("location")
                         .getDouble("lng");
 
                 lat = ((JSONArray) jsonObject.get("results")).getJSONObject(0)
                         .getJSONObject("geometry").getJSONObject("location")
-                        .getDouble("lat");
-
+                        .getDouble("lat");*/
+                lng = 2.352222;
+                lat = 48.856614;
 
                 latLng = new LatLng(lat, lng);
                 objetTransfert.setLatLng(latLng);
