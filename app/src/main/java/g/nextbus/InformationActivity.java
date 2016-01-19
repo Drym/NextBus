@@ -18,13 +18,16 @@ public class InformationActivity extends Activity implements Runnable {
 
     private String numeroBus;
     private String place;
-    private String distarretarret;
+    private String distanceTempsFinal;
     private String distbusarret;
     private String vitesse;
-    public boolean isPassed;
+
     public boolean boucle = true;
 
-    private String temps1;
+    private String minutesA;
+    private String secondesA;
+    private String minutesB;
+    private String secondesB;
 
     //TextView t6 = (TextView) findViewById(R.id.textView11);
 
@@ -48,8 +51,7 @@ public class InformationActivity extends Activity implements Runnable {
                 infos = (JSONObject) infos.get("BUS");
                 vitesse = infos.getString("Vitesse");
                 distbusarret = infos.getString("DistanceBusArret");
-                //Log.d("ConnectionPerma", "distance Bus arret " + distbusarret);
-                //Log.d("ConnectionPerma", "vitesse du bus " + vitesse);
+
             }
             catch(Exception e){
                 e.printStackTrace();
@@ -81,32 +83,16 @@ public class InformationActivity extends Activity implements Runnable {
 
           }
 
-
-
-    /*public String calculTempsArretArrive(){
-        String vit=vitesse;
-        double vitesseReel = Double.parseDouble(vit);
-        double distanceArretAArret = Double.parseDouble(distarretarret);
-        double vitesseConvertie = vitesseReel * 16.6667;
-        double tempsAvantArrivee = distanceArretAArret / vitesseConvertie;
-        Math.round(tempsAvantArrivee);
-        if(!isPassed){
-            double calculTempsArretPerso = Double.parseDouble(calculTempsArretPerso());
-            tempsAvantArrivee = tempsAvantArrivee + calculTempsArretPerso;
-        }
-        else{
-            tempsAvantArrivee = tempsAvantArrivee;
-        }
-        String returnn = ""+vitesseConvertie;
-
-        return returnn;
-    }*/
-
     @Override
     public void run() {
 
-        TextView t6 = (TextView) findViewById(R.id.textView11);
-        TextView t7 = (TextView) findViewById(R.id.textView13);
+        TextView placerestantes = (TextView) findViewById(R.id.textView11);
+
+        TextView minutesArretproche = (TextView) findViewById(R.id.textView13);
+        TextView secondesArretproche = (TextView) findViewById(R.id.textView18);
+
+        TextView minutesArretDest = (TextView) findViewById(R.id.textView16);
+        TextView secondesArretDest = (TextView) findViewById(R.id.textView20);
 
         while(boucle) {
 
@@ -122,25 +108,47 @@ public class InformationActivity extends Activity implements Runnable {
 
 
                 JSONObject infos = new JSONObject(infoTempsReel);
+
                 infos = (JSONObject) infos.get(numeroBus);
                 infos = (JSONObject) infos.get("BUS");
+
                 place = infos.getString("PlacesRestantes");
                 vitesse = infos.getString("Vitesse");
                 distbusarret = infos.getString("DistanceBusArret");
+                distanceTempsFinal = infos.getString("DistanceBusArretArrive");
+
                 double vites = Double.parseDouble(vitesse);
                 double dist = Double.parseDouble(distbusarret);
+                double distFinal = Double.parseDouble(distanceTempsFinal);
+
+                //temps arrivée bus a l'arret le plus proche
                 double temp = (dist / vites)*3.6;
                 temp = Math.round(temp);
                 int arround = (int)temp;
-                temps1 = ""+arround;
 
 
-                //Log.d("ppepeppepepe", "peloepleolpeloeo" + temp);
-                /*Log.d("ppepeppepepe", "peloepleolpeloeo"+vites);
-                Log.d("ppepeppepepe", "peloepleolpeloeo"+dist);*/
+                //temps arrivée bus a l'arret de destination
+                double temp2 = (distFinal / vites)*3.6;
+                temp2 = Math.round(temp2);
+                int arround2 = (int)temp2;
 
-                t6.setText(place);
-                t7.setText(temps1);
+
+                //convertion minutes secondes arret le plus proche
+                minutesA = ""+arround/60;
+                secondesA = ""+arround%60;
+
+                //convertion minutes secondes arret de destination
+                minutesB = ""+arround2/60;
+                secondesB = ""+arround2%60;
+
+
+                placerestantes.setText(place);
+
+                minutesArretproche.setText(minutesA);
+                secondesArretproche.setText(secondesA);
+                minutesArretDest.setText(minutesB);
+                secondesArretDest.setText(secondesB);
+
                 Thread.sleep(1000);
 
 

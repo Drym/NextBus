@@ -128,6 +128,7 @@ public class MainActivity extends Activity implements LocationListener {
                     bundle.putString("ARRETDEST", locationDestArret);
                     bundle.putInt("NUMLINE", numeroLigne);
                     bundle.putString("NUMBUS", numeroBusInfo);
+
                     intent.putExtras(bundle);
                     MainActivity.this.startActivity(intent);
                 }
