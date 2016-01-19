@@ -40,7 +40,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Information"
+        android:text="Informations"
         android:id="@+id/buttonInfo"
         android:layout_below="@+id/editText"
         android:layout_alignParentLeft="true"
